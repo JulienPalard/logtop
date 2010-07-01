@@ -1,0 +1,16 @@
+For copyright information, please see the file COPYRIGHT in this
+directory or in the files of the source tree.
+
+This project was initiated on 2010-06-29 by Palard Julien
+See http://julien.palard.fr or ask me questions at :
+julien at palard in fr
+
+This project is tested on 32 and 64 bits platforms.
+
+Development :
+  I use AVL trees to store strings and counts, so i can fetch by string AND
+  fetch ordered to display the top-strings. A simple ordered list can do the
+  trick for the counts.
+
+TODO :
+  Better integration with curses (resize...)
