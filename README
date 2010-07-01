@@ -7,6 +7,25 @@ julien at palard in fr
 
 This project is tested on 32 and 64 bits platforms.
 
+Usage :
+  logtop displays real-time count of strings recieved in standard input.
+  I's useful for some cases, like :
+  tail -f /var/log/apache2/access.log \
+    | sed -u -r 's/^([^ ]+) ([^ ]+) ([^ ]+) \[([^]]+)] "([^ ]+) ([^"]+) HTTP\/([^"]+)" ([^ ]+) ([^ ]+) "([^"]+)" "([^"]+)"$/\6/g' \
+    | logtop
+  to show the top pages requested on your apache
+  I'd put parenthesis everywhere to allow you to switch the selection :
+   1: ip
+   2: date
+   5: method
+   6: url
+   7: version
+   8: status
+   9: length
+   10: referer
+   11: useragent
+)
+
 Compile (Dependencies) :
   Package: libavl-dev
     Version: 0.3.5-3
