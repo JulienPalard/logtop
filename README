@@ -7,6 +7,12 @@ julien at palard in fr
 
 This project is tested on 32 and 64 bits platforms.
 
+Compile (Dependencies) :
+  Package: libavl-dev
+    Version: 0.3.5-3
+  Package: libncurses5-dev
+    Version: 5.7+20100313-1
+
 Development :
   I use AVL trees to store strings and counts, so i can fetch by string AND
   fetch ordered to display the top-strings. A simple ordered list can do the
