@@ -12,7 +12,7 @@ OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .
 DEFINE = _GNU_SOURCE
-LIB = -lavl -lncurses
+LIB = -lavl -lncurses -lefence
 CFLAGS = -fPIC -g3 -O3 -W -Wall -ansi -pedantic -I$(INCLUDE)
 RM = rm -rf
 

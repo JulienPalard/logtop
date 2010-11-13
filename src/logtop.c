@@ -63,7 +63,7 @@ history_element_t *newest_element_in_history()
     int           newest_item_index;
 
     newest_item_index = gl_env.history_start == 0
-        ? gl_env.history_size
+        ? gl_env.history_size - 1
         : gl_env.history_start - 1;
     if (gl_env.history[newest_item_index].log_entry == NULL)
         return NULL;
@@ -124,8 +124,8 @@ void            run()
 
 void    usage_and_exit(char* program_name)
 {
-    fprintf(stderr, "Usage: tail something |"                           \
-            " %s [-s history_size] [-c display_size]\n", program_name);
+    fprintf(stderr, "Usage: tail something |" \
+            " %s [-s history_size] [-c display_height]\n", program_name);
     exit(EXIT_FAILURE);
 }
 
