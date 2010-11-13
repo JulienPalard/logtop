@@ -96,6 +96,8 @@ void    parse_args(int ac, char **av)
 {
     int opt;
 
+    gl_env.history_size = 0;
+    gl_env.display_height = 0;
     while ((opt = getopt(ac, av, "s:c:")) != -1)
     {
         switch (opt)
