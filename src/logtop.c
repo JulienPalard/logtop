@@ -30,19 +30,53 @@
 #include <stdio.h>
 #include "logtop.h"
 
-/*
-** Please start reading the main at the bottom of this file.
-**
-*/
-
 env_t gl_env;
+
+unsigned int qte_of_elements_in_history()
+{
+    if (gl_env.history[gl_env.history_start].log_entry == NULL)
+        return gl_env.history_start;
+    else
+    {
+        return gl_env.history_size;
+    }
+}
+
+history_element_t *oldest_element_in_history()
+{
+    if (gl_env.history[gl_env.history_start].log_entry == NULL)
+    {
+        if (gl_env.history_start == 0)
+        {
+            return NULL;
+        }
+        return &(gl_env.history[0]);
+    }
+    else
+    {
+        return &(gl_env.history[gl_env.history_start]);
+    }
+}
+
+history_element_t *newest_element_in_history()
+{
+    int           newest_item_index;
+
+    newest_item_index = gl_env.history_start == 0
+        ? gl_env.history_size
+        : gl_env.history_start - 1;
+    if (gl_env.history[newest_item_index].log_entry == NULL)
+        return NULL;
+    else
+        return &(gl_env.history[newest_item_index]);
+}
 
 void                  update_history(log_entry_t *element)
 {
     history_element_t *history_element;
     log_entry_t       *log_entry;
 
-    history_element = &(gl_env.history[gl_env.history_index]);
+    history_element = &(gl_env.history[gl_env.history_start]);
     log_entry = history_element->log_entry;
     if (log_entry != NULL)
     {
@@ -57,10 +91,11 @@ void                  update_history(log_entry_t *element)
             update_log_entry(log_entry);
         }
     }
-    gl_env.history[gl_env.history_index].log_entry = element;
-    gl_env.history_index += 1;
-    if (gl_env.history_index >= gl_env.history_size)
-        gl_env.history_index = 0;
+    gl_env.history[gl_env.history_start].log_entry = element;
+    gl_env.history[gl_env.history_start].time = time(NULL);
+    gl_env.history_start += 1;
+    if (gl_env.history_start >= gl_env.history_size)
+        gl_env.history_start = 0;
 }
 
 void            got_a_new_string(char *string)
