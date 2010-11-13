@@ -29,74 +29,80 @@
 
 #include "logtop.h"
 
-static int	compare_string(const void *element1, const void *element2)
+static int    compare_string(const void *element1, const void *element2)
 {
     return (strcmp(((log_entry_t*)element1)->string, ((log_entry_t*)element2)->string));
 }
 
-static int	compare_count(const void *element1, const void *element2)
+static int    compare_count(const void *element1, const void *element2)
 {
     if (((log_entry_t*)element1)->count == ((log_entry_t*)element2)->count)
-	return (long)element1 - (long)element2;
+    return (long)element1 - (long)element2;
     return (((log_entry_t*)element2)->count - ((log_entry_t*)element1)->count);
 }
 
-static void	freeitem(void *element)
+static void    freeitem(void *element)
 {
     free(((log_entry_t*)element)->string);
     free(element);
 }
 
-void	init_data_structures(int size)
+void    init_data_structures()
 {
-    gl_env.history = (log_entry_t**)calloc(sizeof(log_entry_t*), size);
+    gl_env.history = (log_entry_t**)calloc(sizeof(log_entry_t*),
+                                           gl_env.history_size);
     gl_env.history_index = 0;
-    gl_env.history_size = size;
     gl_env.strings = avl_alloc_tree(compare_string, freeitem);
     gl_env.top = avl_alloc_tree(compare_count, NULL);
     if (gl_env.strings == NULL || gl_env.top == NULL)
     {
-	fputs("Not enough memory to create storage", stderr);
-	exit(EXIT_FAILURE);
+        fputs("Not enough memory to create storage", stderr);
+        exit(EXIT_FAILURE);
     }
 }
 
 void die()
 {
-    fputs("Ran out of memory, commit suicide for important tasks to live !", stderr);
+    fputs("Ran out of memory, commit suicide for important tasks to live !",
+          stderr);
     exit(EXIT_FAILURE);
 }
 
-log_entry_t	*create_log_entry(char *string)
+log_entry_t     *create_log_entry(char *string)
 {
-    log_entry_t	*entry;
+    log_entry_t *entry;
 
     entry = (log_entry_t*)malloc(sizeof(log_entry_t));
     if (entry == NULL)
-	die();
+        die();
     entry->count = 0;
     entry->string = strdup(string);
     if (entry->string == NULL)
-	die();
+        die();
     entry->string_node = avl_insert(gl_env.strings, entry);
     entry->top_node = avl_insert(gl_env.top, entry);
     return entry;
 }
 
-log_entry_t	*get_log_entry(char *string)
+log_entry_t       *get_log_entry(char *string)
 {
-    avl_node_t	*node;
-    log_entry_t	search;
+    avl_node_t    *node;
+    log_entry_t   search;
 
     search.string = string;
     node = avl_search(gl_env.strings, &search);
     if (node != NULL)
-	return (log_entry_t*)node->item;
+        return (log_entry_t*)node->item;
     else
-	return create_log_entry(string);
+        return create_log_entry(string);
 }
 
-void	update_log_entry(log_entry_t *log_entry)
+/*
+** The entry count have changed :
+** The only solution to update the tree, is to unlink and reinsert
+** the entry in the tree.
+*/
+void    update_log_entry(log_entry_t *log_entry)
 {
     avl_unlink_node(gl_env.top, log_entry->top_node);
     avl_insert_node(gl_env.top, log_entry->top_node);

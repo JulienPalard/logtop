@@ -27,29 +27,31 @@
 #define __LOGTOP_H__
 
 #include <avl.h>
+#include <time.h>
 
-#define BUFFER_SIZE 4096
 #define UNUSED(x) x __attribute__((unused))
 
-typedef struct		s_element
+typedef struct   s_element
 {
-    char		*string;
-    unsigned int	count;
-    avl_node_t		*string_node;
-    avl_node_t		*top_node;
-}			log_entry_t;
+    char         *string;
+    unsigned int count;
+    avl_node_t   *string_node;
+    avl_node_t   *top_node;
+}                log_entry_t;
 
-typedef struct		s_env
+typedef struct   s_env
 {
-    avl_tree_t		*strings;
-    avl_tree_t		*top;
+    avl_tree_t   *strings;
+    avl_tree_t   *top;
 
-    log_entry_t		**history;
-    unsigned int	history_index;
-    unsigned int	history_size;
-}			t_env;
+    log_entry_t  **history;
+    unsigned int history_index;
+    unsigned int history_size;
+    unsigned int display_height;
+    time_t       last_update_time;
+}                env_t;
 
-extern t_env gl_env;
+extern env_t gl_env;
 
 /*
 ** In avl.c
@@ -58,8 +60,14 @@ extern t_env gl_env;
 /*
 ** Adds or increments a string in the AVL and returns its representing log_entry_t
 */
-log_entry_t	*get_log_entry(char *);
-void		update_log_entry(log_entry_t *);
-void		init_data_structures();
+log_entry_t *get_log_entry(char *);
+void        update_log_entry(log_entry_t *);
+void        init_data_structures();
+
+void    curses_setup();
+void    curses_release();
+void    curses_update();
+
+void    stdout_update();
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Julien Palard.  All rights reserved.
+ * Copyright (c) 2010 Julien Palard.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,96 +25,105 @@
 
 #include <string.h>
 #include <errno.h>
-#include <ncurses.h>
-#include <curses.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include "logtop.h"
 
-t_env	gl_env;
+/*
+** Please start reading the main at the bottom of this file.
+**
+*/
 
-void			update_display()
+env_t gl_env;
+
+void                update_history(log_entry_t *element)
 {
-    avl_node_t		*node;
-    int			i;
-
-    i = 0;
-    clear();
-    for(node = gl_env.top->head; node; node = node->next)
-	mvprintw(i++, 0, "%d\t%s", ((log_entry_t*)node->item)->count, ((log_entry_t*)node->item)->string);
-    refresh();
-}
-
-void			update_history(log_entry_t *element)
-{
-    log_entry_t		*history_element;
+    log_entry_t     *history_element;
 
     history_element = gl_env.history[gl_env.history_index];
     if (history_element != NULL)
     {
-	history_element->count--;
-	if (history_element->count == 0)
-	{
-	    avl_delete_node(gl_env.top, history_element->top_node);
-	    avl_delete_node(gl_env.strings, history_element->string_node);
-	}
-	else
-	{
-	    update_log_entry(history_element);
-	}
+        history_element->count--;
+        if (history_element->count == 0)
+        {
+            avl_delete_node(gl_env.top, history_element->top_node);
+            avl_delete_node(gl_env.strings, history_element->string_node);
+        }
+        else
+        {
+            update_log_entry(history_element);
+        }
     }
     gl_env.history[gl_env.history_index] = element;
     gl_env.history_index += 1;
     if (gl_env.history_index >= gl_env.history_size)
-	gl_env.history_index = 0;
+        gl_env.history_index = 0;
 }
 
-void		run()
+void            got_a_new_string(char *string)
 {
-    char	*string;
-    size_t	size;
-    log_entry_t	*element;
+    log_entry_t *element;
 
-    string = (char*)malloc(BUFFER_SIZE);
-    size = BUFFER_SIZE;
-    while (1)
-    {
-	if (getline(&string, &size, stdin) == -1)
-	{
-	    perror("getline");
-	    exit(EXIT_FAILURE);
-	}
-	element = get_log_entry(string);
-	element->count += 1;
-	update_log_entry(element);
-	update_history(element);
-	update_display();
-    }
+    element = get_log_entry(string);
+    element->count += 1;
+    update_log_entry(element);
+    update_history(element);
+    curses_update();
 }
 
-int	main(UNUSED(int ac), UNUSED(char **av))
+void            run()
 {
-    int	size;
-    int	opt;
+    char        *string;
+    size_t      size;
 
-    size = 100;
-    while ((opt = getopt(ac, av, "s:")) != -1)
+    string = NULL;
+    size = 0;
+    while (getline(&string, &size, stdin) != -1)
+        got_a_new_string(string);
+    if (string != NULL)
+        free(string);
+}
+
+void    usage_and_exit(char* program_name)
+{
+    fprintf(stderr, "Usage: tail something |"                           \
+            " %s [-s history_size] [-c display_size]\n", program_name);
+    exit(EXIT_FAILURE);
+}
+
+void    parse_args(int ac, char **av)
+{
+    int opt;
+
+    while ((opt = getopt(ac, av, "s:c:")) != -1)
     {
-	switch (opt)
-	{
-	case 's':
-	    size = atoi(optarg);
-	    break;
-	default:
-	    fprintf(stderr, "Usage: tail something | %s [-s history_size]\n",
-		    av[0]);
-	    exit(EXIT_FAILURE);
-	}
+        switch (opt)
+        {
+        case 's':
+            gl_env.history_size = atoi(optarg);
+            break;
+        case 'c':
+            gl_env.display_height = atoi(optarg);
+            break;
+        default:
+            usage_and_exit(av[0]);
+        }
     }
-    init_data_structures(size);
-    initscr();
-    curs_set(0);
+    if (gl_env.history_size == 0)
+        gl_env.history_size = 100;
+    if (gl_env.display_height == 0)
+        gl_env.display_height = 24;
+}
+
+
+int    main(int ac, char **av)
+{
+    parse_args(ac, av);
+    init_data_structures();
+    curses_setup();
     run();
+    curses_release();
+    stdout_update();
     return (EXIT_SUCCESS);
 }
