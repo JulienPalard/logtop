@@ -47,6 +47,7 @@ void                    curses_update()
     log_entry_t         *log_entry;
     history_element_t   *oldest_element;
     history_element_t   *newest_element;
+    unsigned int        qte_of_elements;
 
     duration = 0;
     oldest_element = oldest_element_in_history();
@@ -61,10 +62,17 @@ void                    curses_update()
     }
     gl_env.last_update_time = current_time;
     i = 0;
+    qte_of_elements = qte_of_elements_in_history();
     clear();
-    mvprintw(i++, 0, "%d elements in %d seconds\n",
-           qte_of_elements_in_history(),
-           (unsigned int)duration);
+    if (duration > 0)
+        mvprintw(i++, 0, "%d elements in %d seconds (%.2f elements/s)\n",
+                 qte_of_elements,
+                 (unsigned int)duration,
+                 qte_of_elements / (double)duration);
+    else
+        mvprintw(i++, 0, "%d elements in %d seconds\n",
+                 qte_of_elements,
+                 (unsigned int)duration);
     for (node = gl_env.top->head;
          node != NULL && i < gl_env.display_height;
          node = node->next)

@@ -34,6 +34,7 @@ void                    stdout_update()
     history_element_t   *newest_element;
     double              duration;
     log_entry_t         *log_entry;
+    unsigned int        qte_of_elements;
 
     duration = 0;
     oldest_element = oldest_element_in_history();
@@ -41,6 +42,16 @@ void                    stdout_update()
     if (oldest_element != NULL && newest_element != NULL)
         duration = difftime(newest_element->time, oldest_element->time);
     i = 0;
+    qte_of_elements = qte_of_elements_in_history();
+    if (duration > 0)
+        printf("%d elements in %d seconds (%.2f elements/s)\n",
+               qte_of_elements,
+               (unsigned int)duration,
+               qte_of_elements / (double)duration);
+    else
+        printf("%d elements in %d seconds\n",
+               qte_of_elements,
+               (unsigned int)duration);
     printf("%d elements in %d seconds\n",
            qte_of_elements_in_history(),
            (unsigned int)duration);
