@@ -31,7 +31,8 @@
 
 static int    compare_string(const void *element1, const void *element2)
 {
-    return (strcmp(((log_entry_t*)element1)->string, ((log_entry_t*)element2)->string));
+    return (strcmp(((log_entry_t*)element1)->string,
+                   ((log_entry_t*)element2)->string));
 }
 
 static int    compare_count(const void *element1, const void *element2)
@@ -49,8 +50,8 @@ static void    freeitem(void *element)
 
 void    init_data_structures()
 {
-    gl_env.history = (log_entry_t**)calloc(sizeof(log_entry_t*),
-                                           gl_env.history_size);
+    gl_env.history = (history_element_t*)calloc(sizeof(history_element_t),
+                                                gl_env.history_size);
     gl_env.history_index = 0;
     gl_env.strings = avl_alloc_tree(compare_string, freeitem);
     gl_env.top = avl_alloc_tree(compare_count, NULL);

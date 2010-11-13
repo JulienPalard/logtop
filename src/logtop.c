@@ -37,25 +37,27 @@
 
 env_t gl_env;
 
-void                update_history(log_entry_t *element)
+void                  update_history(log_entry_t *element)
 {
-    log_entry_t     *history_element;
+    history_element_t *history_element;
+    log_entry_t       *log_entry;
 
-    history_element = gl_env.history[gl_env.history_index];
-    if (history_element != NULL)
+    history_element = &(gl_env.history[gl_env.history_index]);
+    log_entry = history_element->log_entry;
+    if (log_entry != NULL)
     {
-        history_element->count--;
-        if (history_element->count == 0)
+        log_entry->count--;
+        if (log_entry->count == 0)
         {
-            avl_delete_node(gl_env.top, history_element->top_node);
-            avl_delete_node(gl_env.strings, history_element->string_node);
+            avl_delete_node(gl_env.top, log_entry->top_node);
+            avl_delete_node(gl_env.strings, log_entry->string_node);
         }
         else
         {
-            update_log_entry(history_element);
+            update_log_entry(log_entry);
         }
     }
-    gl_env.history[gl_env.history_index] = element;
+    gl_env.history[gl_env.history_index].log_entry = element;
     gl_env.history_index += 1;
     if (gl_env.history_index >= gl_env.history_size)
         gl_env.history_index = 0;

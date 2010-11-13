@@ -39,12 +39,18 @@ typedef struct   s_element
     avl_node_t   *top_node;
 }                log_entry_t;
 
+typedef struct  s_history_element
+{
+    log_entry_t *log_entry;
+    time_t      time;
+}               history_element_t;
+
 typedef struct   s_env
 {
     avl_tree_t   *strings;
     avl_tree_t   *top;
 
-    log_entry_t  **history;
+    history_element_t  *history;
     unsigned int history_index;
     unsigned int history_size;
     unsigned int display_height;
@@ -58,7 +64,8 @@ extern env_t gl_env;
 */
 
 /*
-** Adds or increments a string in the AVL and returns its representing log_entry_t
+** Adds or increments a string in the AVL and returns its
+** representing log_entry_t
 */
 log_entry_t *get_log_entry(char *);
 void        update_log_entry(log_entry_t *);
