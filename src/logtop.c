@@ -32,29 +32,29 @@
 
 env_t gl_env;
 
+/*
+** If the element under history_start is null
+** then the history is not full.
+*/
 unsigned int qte_of_elements_in_history()
 {
     if (gl_env.history[gl_env.history_start].log_entry == NULL)
         return gl_env.history_start;
     else
-    {
         return gl_env.history_size;
-    }
 }
 
 history_element_t *oldest_element_in_history()
 {
-    if (gl_env.history[gl_env.history_start].log_entry == NULL)
+    if (gl_env.history[gl_env.history_start].log_entry != NULL)
     {
-        if (gl_env.history_start == 0)
-        {
-            return NULL;
-        }
-        return &(gl_env.history[0]);
+        return &(gl_env.history[gl_env.history_start]);
     }
     else
     {
-        return &(gl_env.history[gl_env.history_start]);
+        if (gl_env.history_start == 0)
+            return NULL;
+        return &(gl_env.history[0]);
     }
 }
 
@@ -71,10 +71,10 @@ history_element_t *newest_element_in_history()
         return &(gl_env.history[newest_item_index]);
 }
 
-void                  update_history(log_entry_t *element)
+void                  update_history(log_line *element)
 {
     history_element_t *history_element;
-    log_entry_t       *log_entry;
+    log_line       *log_entry;
 
     history_element = &(gl_env.history[gl_env.history_start]);
     log_entry = history_element->log_entry;
@@ -100,7 +100,7 @@ void                  update_history(log_entry_t *element)
 
 void            got_a_new_string(char *string)
 {
-    log_entry_t *element;
+    log_line *element;
 
     element = get_log_entry(string);
     element->count += 1;

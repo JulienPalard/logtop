@@ -31,31 +31,30 @@
 
 #define UNUSED(x) x __attribute__((unused))
 
-typedef struct   s_element
+typedef struct   s_log_line
 {
     char         *string;
     unsigned int count;
     avl_node_t   *string_node;
     avl_node_t   *top_node;
-}                log_entry_t;
+}                log_line;
 
-typedef struct  s_history_element
+typedef struct s_history_element
 {
-    log_entry_t *log_entry;
-    time_t      time;
-}               history_element_t;
+    log_line   *log_entry;
+    time_t     time;
+}              history_element_t;
 
-typedef struct   s_env
+typedef struct        s_env
 {
-    avl_tree_t   *strings;
-    avl_tree_t   *top;
-
-    history_element_t  *history;
-    unsigned int history_start;
-    unsigned int history_size;
-    unsigned int display_height;
-    time_t       last_update_time;
-}                env_t;
+    avl_tree_t        *strings;
+    avl_tree_t        *top;
+    history_element_t *history;
+    unsigned int      history_start;
+    unsigned int      history_size;
+    unsigned int      display_height;
+    time_t            last_update_time;
+}                     env_t;
 
 extern env_t gl_env;
 
@@ -65,17 +64,17 @@ extern env_t gl_env;
 
 /*
 ** Adds or increments a string in the AVL and returns its
-** representing log_entry_t
+** representing log_line
 */
-log_entry_t *get_log_entry(char *);
-void        update_log_entry(log_entry_t *);
-void        init_data_structures();
+log_line *get_log_entry(char *);
+void     update_log_entry(log_line *);
+void     init_data_structures();
 
-void    curses_setup();
-void    curses_release();
-void    curses_update();
+void     curses_setup();
+void     curses_release();
+void     curses_update();
 
-void    stdout_update();
+void     stdout_update();
 
 history_element_t *oldest_element_in_history();
 history_element_t *newest_element_in_history();

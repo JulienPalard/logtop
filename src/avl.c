@@ -31,20 +31,20 @@
 
 static int    compare_string(const void *element1, const void *element2)
 {
-    return (strcmp(((log_entry_t*)element1)->string,
-                   ((log_entry_t*)element2)->string));
+    return (strcmp(((log_line*)element1)->string,
+                   ((log_line*)element2)->string));
 }
 
 static int    compare_count(const void *element1, const void *element2)
 {
-    if (((log_entry_t*)element1)->count == ((log_entry_t*)element2)->count)
+    if (((log_line*)element1)->count == ((log_line*)element2)->count)
     return (long)element1 - (long)element2;
-    return (((log_entry_t*)element2)->count - ((log_entry_t*)element1)->count);
+    return (((log_line*)element2)->count - ((log_line*)element1)->count);
 }
 
 static void    freeitem(void *element)
 {
-    free(((log_entry_t*)element)->string);
+    free(((log_line*)element)->string);
     free(element);
 }
 
@@ -69,11 +69,11 @@ void die()
     exit(EXIT_FAILURE);
 }
 
-log_entry_t     *create_log_entry(char *string)
+log_line     *create_log_entry(char *string)
 {
-    log_entry_t *entry;
+    log_line *entry;
 
-    entry = (log_entry_t*)malloc(sizeof(log_entry_t));
+    entry = (log_line*)malloc(sizeof(log_line));
     if (entry == NULL)
         die();
     entry->count = 0;
@@ -85,15 +85,15 @@ log_entry_t     *create_log_entry(char *string)
     return entry;
 }
 
-log_entry_t       *get_log_entry(char *string)
+log_line       *get_log_entry(char *string)
 {
     avl_node_t    *node;
-    log_entry_t   search;
+    log_line   search;
 
     search.string = string;
     node = avl_search(gl_env.strings, &search);
     if (node != NULL)
-        return (log_entry_t*)node->item;
+        return (log_line*)node->item;
     else
         return create_log_entry(string);
 }
@@ -103,7 +103,7 @@ log_entry_t       *get_log_entry(char *string)
 ** The only solution to update the tree, is to unlink and reinsert
 ** the entry in the tree.
 */
-void    update_log_entry(log_entry_t *log_entry)
+void    update_log_entry(log_line *log_entry)
 {
     avl_unlink_node(gl_env.top, log_entry->top_node);
     avl_insert_node(gl_env.top, log_entry->top_node);
