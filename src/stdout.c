@@ -73,5 +73,6 @@ void                    stdout_update()
                    log_entry->count,
                    log_entry->string);
         }
+        i += 1;
     }
 }
