@@ -65,13 +65,13 @@ void                    stdout_update()
             printf("%d %.2f/s\t%s",
                    log_entry->count,
                    log_entry->count / (double)duration,
-                   log_entry->string);
+                   log_entry->repr);
         }
         else
         {
             printf("%d\t%s",
                    log_entry->count,
-                   log_entry->string);
+                   log_entry->repr);
         }
         i += 1;
     }

@@ -98,7 +98,7 @@ void                  update_history(log_line *element)
         gl_env.history_start = 0;
 }
 
-void            got_a_new_string(char *string)
+void         got_a_new_string(char *string)
 {
     log_line *element;
 

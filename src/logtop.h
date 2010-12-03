@@ -34,6 +34,7 @@
 typedef struct   s_log_line
 {
     char         *string;
+    char         *repr;
     unsigned int count;
     avl_node_t   *string_node;
     avl_node_t   *top_node;

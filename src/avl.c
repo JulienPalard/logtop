@@ -45,6 +45,7 @@ static int    compare_count(const void *element1, const void *element2)
 static void    freeitem(void *element)
 {
     free(((log_line*)element)->string);
+    free(((log_line*)element)->repr);
     free(element);
 }
 
@@ -72,6 +73,7 @@ void die()
 log_line     *create_log_entry(char *string)
 {
     log_line *entry;
+    int      i;
 
     entry = (log_line*)malloc(sizeof(log_line));
     if (entry == NULL)
@@ -79,6 +81,13 @@ log_line     *create_log_entry(char *string)
     entry->count = 0;
     entry->string = strdup(string);
     if (entry->string == NULL)
+        die();
+    string[strlen(string) - 1] = '\0';
+    for (i = 0; string[i]; ++i)
+	if (string[i] < ' ' || string[i] > '~')
+	    string[i] = '.';
+    entry->repr = strdup(string);
+    if (entry->repr == NULL)
         die();
     entry->string_node = avl_insert(gl_env.strings, entry);
     entry->top_node = avl_insert(gl_env.top, entry);
