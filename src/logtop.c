@@ -129,13 +129,19 @@ void    usage_and_exit(char* program_name)
     exit(EXIT_FAILURE);
 }
 
+void    version_and_exit(char* program_name)
+{
+    fprintf(stderr, "%s v0.1\n", program_name);
+    exit(EXIT_FAILURE);
+}
+
 void    parse_args(int ac, char **av)
 {
     int opt;
 
     gl_env.history_size = 0;
     gl_env.display_height = 0;
-    while ((opt = getopt(ac, av, "s:c:")) != -1)
+    while ((opt = getopt(ac, av, "hvs:c:")) != -1)
     {
         switch (opt)
         {
@@ -144,6 +150,9 @@ void    parse_args(int ac, char **av)
             break;
         case 'c':
             gl_env.display_height = atoi(optarg);
+            break;
+        case 'v':
+            version_and_exit(av[0]);
             break;
         default:
             usage_and_exit(av[0]);
