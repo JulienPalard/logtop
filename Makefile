@@ -14,10 +14,14 @@ INCLUDE = .
 DEFINE = _GNU_SOURCE
 LIB = -lavl -lncurses #-lefence
 CFLAGS = -fPIC -g3 -O3 -W -Wall -ansi -pedantic -I$(INCLUDE)
-RM = rm -rf
+RM = rm -f
 
 $(NAME):	$(OBJ)
 		$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB)
+
+install:	$(NAME)
+		mkdir -p $(DESTDIR)/usr/bin/
+		cp $(NAME) $(DESTDIR)/usr/bin/
 
 all:
 		@make $(NAME)
@@ -26,9 +30,6 @@ all:
 		$(CC) -D $(DEFINE) -c $(CFLAGS) $< -o $(<:.c=.o)
 
 clean:
-		$(RM) $(DSRC)/*~ $(DSRC)/#*# $(DSRC)/*.o $(DSRC)/*.core
+		$(RM) $(NAME) $(DSRC)/*~ $(DSRC)/#*# $(DSRC)/*.o $(DSRC)/*.core
 
-fclean:		clean
-		$(RM) $(NAME)
-
-re:		fclean all
+re:		clean all
