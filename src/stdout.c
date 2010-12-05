@@ -49,12 +49,8 @@ void                    stdout_update()
                (unsigned int)duration,
                qte_of_elements / (double)duration);
     else
-        printf("%d elements in %d seconds\n",
-               qte_of_elements,
-               (unsigned int)duration);
-    printf("%d elements in %d seconds\n",
-           qte_of_elements_in_history(),
-           (unsigned int)duration);
+        printf("%d elements\n",
+               qte_of_elements);
     for (node = gl_env.top->head;
          node != NULL && i < gl_env.display_height;
          node = node->next)
@@ -62,14 +58,16 @@ void                    stdout_update()
         log_entry = (log_line*)node->item;
         if (duration > 0)
         {
-            printf("%d %.2f/s\t%s",
+            printf("%4d %4d %4.2f/s %s\n",
+                   i + 1,
                    log_entry->count,
                    log_entry->count / (double)duration,
                    log_entry->repr);
         }
         else
         {
-            printf("%d\t%s",
+            printf("%4d %4d %s\n",
+                   i + 1,
                    log_entry->count,
                    log_entry->repr);
         }

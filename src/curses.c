@@ -80,18 +80,18 @@ void                    curses_update()
         log_entry = (log_line*)node->item;
         if (duration > 0)
         {
-            mvprintw(i, 0, "%d\t%d %.2f/s\t%s",
-		     i,
+            mvprintw(i, 0, "%4d %4d %4.2f/s %s",
+                     i,
                      log_entry->count,
                      log_entry->count / (double)duration,
                      log_entry->repr);
         }
         else
         {
-            mvprintw(i, 0, "%d\t%d\t%s",
-		     i,
-		     log_entry->count,
-		     log_entry->repr);
+            mvprintw(i, 0, "%4d %4d %s",
+                     i,
+                     log_entry->count,
+                     log_entry->repr);
         }
         i += 1;
     }
