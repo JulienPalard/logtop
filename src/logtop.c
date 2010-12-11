@@ -148,9 +148,6 @@ void    parse_args(int ac, char **av)
         case 's':
             gl_env.history_size = atoi(optarg);
             break;
-        case 'c':
-            gl_env.display_height = atoi(optarg);
-            break;
         case 'v':
             version_and_exit(av[0]);
             break;

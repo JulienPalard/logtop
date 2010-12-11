@@ -25,10 +25,17 @@
 
 #include <ncurses.h>
 #include <curses.h>
+#include <sys/ioctl.h>
 #include "logtop.h"
 
-void    curses_setup()
+void               curses_setup()
 {
+    struct winsize ws;
+
+    if (ioctl(1, TIOCGWINSZ, &ws) == -1)
+        gl_env.display_height = 24;
+    else
+        gl_env.display_height = ws.ws_row;
     initscr();
     curs_set(0);
 }
@@ -44,7 +51,7 @@ void                    curses_update()
     unsigned int        i;
     time_t              current_time;
     double              duration;
-    log_line         *log_entry;
+    log_line            *log_entry;
     history_element_t   *oldest_element;
     history_element_t   *newest_element;
     unsigned int        qte_of_elements;
