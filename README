@@ -7,6 +7,14 @@ julien at palard in fr
 
 This project is tested on 32 and 64 bits platforms.
 
+Compile :
+    You will need :
+    $ aptitude install libavl-dev libncurses5-dev
+
+Run :
+    Wou will need :
+    $ aptitude install libavl1 libncurses5
+
 Usage :
   logtop displays real-time count of strings recieved in standard input.
   I's useful for some cases, like :
