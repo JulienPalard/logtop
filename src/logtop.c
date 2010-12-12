@@ -74,7 +74,7 @@ history_element_t *newest_element_in_history()
 void                  update_history(log_line *element)
 {
     history_element_t *history_element;
-    log_line       *log_entry;
+    log_line          *log_entry;
 
     history_element = &(gl_env.history[gl_env.history_start]);
     log_entry = history_element->log_entry;
@@ -109,10 +109,10 @@ void         got_a_new_string(char *string)
     curses_update();
 }
 
-void            run()
+void       run()
 {
-    char        *string;
-    size_t      size;
+    char   *string;
+    size_t size;
 
     string = NULL;
     size = 0;
@@ -126,12 +126,14 @@ void    usage_and_exit(char* program_name)
 {
     fprintf(stderr, "Usage: tail something |" \
             " %s [-s history_size]\n", program_name);
+    fprintf(stderr, "    history_size: Number of log line to keep\n");
+    fprintf(stderr, "                  Defaults to 10000 lines.\n");
     exit(EXIT_FAILURE);
 }
 
 void    version_and_exit(char* program_name)
 {
-    fprintf(stderr, "%s v0.1\n", program_name);
+    fprintf(stderr, "%s v0.11\n", program_name);
     exit(EXIT_FAILURE);
 }
 
@@ -140,7 +142,6 @@ void    parse_args(int ac, char **av)
     int opt;
 
     gl_env.history_size = 0;
-    gl_env.display_height = 0;
     while ((opt = getopt(ac, av, "hvs:c:")) != -1)
     {
         switch (opt)
@@ -156,9 +157,7 @@ void    parse_args(int ac, char **av)
         }
     }
     if (gl_env.history_size == 0)
-        gl_env.history_size = 100;
-    if (gl_env.display_height == 0)
-        gl_env.display_height = 24;
+        gl_env.history_size = 10000;
 }
 
 
