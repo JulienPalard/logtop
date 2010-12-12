@@ -125,7 +125,7 @@ void            run()
 void    usage_and_exit(char* program_name)
 {
     fprintf(stderr, "Usage: tail something |" \
-            " %s [-s history_size] [-c display_height]\n", program_name);
+            " %s [-s history_size]\n", program_name);
     exit(EXIT_FAILURE);
 }
 
