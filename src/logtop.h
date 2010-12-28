@@ -49,14 +49,6 @@ typedef struct        s_env
 
 extern env_t gl_env;
 
-/*
-** In avl.c
-*/
-
-/*
-** Adds or increments a string in the AVL and returns its
-** representing log_line
-*/
 log_line_t *get_log_entry(char *);
 
 void curses_setup();

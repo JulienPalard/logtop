@@ -36,10 +36,11 @@ static int compare_log_lines_string(const void *log_line1,
                    ((log_line_t*)log_line2)->string));
 }
 
-static int    compare_count(const void *log_line1, const void *log_line2)
+static int    compare_log_lines_count(const void *log_line1,
+				      const void *log_line2)
 {
     if (((log_line_t*)log_line1)->count == ((log_line_t*)log_line2)->count)
-    return (long)log_line1 - (long)log_line2;
+        return compare_log_lines_string(log_line1, log_line2);
     return (((log_line_t*)log_line2)->count - ((log_line_t*)log_line1)->count);
 }
 
@@ -55,7 +56,7 @@ void    init_avl()
     gl_env.history_start = 0;
     gl_env.last_update_time = time(NULL);
     gl_env.strings = avl_alloc_tree(compare_log_lines_string, freeitem);
-    gl_env.top = avl_alloc_tree(compare_count, NULL);
+    gl_env.top = avl_alloc_tree(compare_log_lines_count, NULL);
     if (gl_env.strings == NULL || gl_env.top == NULL)
     {
         fputs("Not enough memory to create storage", stderr);
@@ -70,10 +71,23 @@ void die()
     exit(EXIT_FAILURE);
 }
 
+char     *repr(const char *str)
+{
+    char *clean;
+    int  i;
+
+    clean = strdup(str);
+    if (clean == NULL)
+      return NULL;
+    for (i = 0; clean[i] != '\0'; ++i)
+        if (clean[i] < ' ' || clean[i] > '~')
+	    clean[i] = '.';
+    return clean;
+}
+
 log_line_t     *create_log_entry(char *string)
 {
     log_line_t *entry;
-    int        i;
 
     entry = (log_line_t*)malloc(sizeof(*entry));
     if (entry == NULL)
@@ -82,11 +96,7 @@ log_line_t     *create_log_entry(char *string)
     entry->string = strdup(string);
     if (entry->string == NULL)
         die();
-    string[strlen(string) - 1] = '\0';
-    for (i = 0; string[i]; ++i)
-	if (string[i] < ' ' || string[i] > '~')
-	    string[i] = '.';
-    entry->repr = strdup(string);
+    entry->repr = repr(string);
     if (entry->repr == NULL)
         die();
     entry->string_node = avl_insert(gl_env.strings, entry);

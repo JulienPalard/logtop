@@ -38,6 +38,7 @@ void           got_a_new_string(char *string)
 {
     log_line_t *element;
 
+    string[strlen(string) - 1] = '\0'; /* Drop '\n' */
     element = get_log_entry(string);
     increment_log_entry_count(element);
     update_history(element);
