@@ -29,17 +29,12 @@
 #include <time.h>
 
 #include "avl.h"
+#include "history.h"
 
 #define UNUSED(x) x __attribute__((unused))
 #define __LOGTOP_STRINGIFY(x) #x
 #define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
 #define DEFAULT_HISTORY_SIZE 10000
-
-typedef struct s_history_element
-{
-    log_line_t *log_entry;
-    time_t     time;
-}              history_element_t;
 
 typedef struct        s_env
 {

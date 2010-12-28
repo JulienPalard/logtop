@@ -28,6 +28,12 @@
 
 #include "avl.h"
 
+typedef struct s_history_element
+{
+    log_line_t *log_entry;
+    time_t     time;
+}              history_element_t;
+
 void init_history();
 history_element_t *oldest_element_in_history();
 history_element_t *newest_element_in_history();
