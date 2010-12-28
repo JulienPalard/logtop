@@ -27,6 +27,7 @@
 #include <curses.h>
 #include <sys/ioctl.h>
 #include "logtop.h"
+#include "history.h"
 
 void               curses_setup()
 {

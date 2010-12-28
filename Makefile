@@ -7,7 +7,7 @@
 
 NAME = logtop
 DSRC = src
-SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/curses.c $(DSRC)/stdout.c
+SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/history.c $(DSRC)/curses.c $(DSRC)/stdout.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .

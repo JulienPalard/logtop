@@ -29,47 +29,10 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "logtop.h"
+#include "history.h"
+#include "avl.h"
 
 env_t gl_env;
-
-/*
-** If the element under history_start is null
-** then the history is not full.
-*/
-unsigned int qte_of_elements_in_history()
-{
-    if (gl_env.history[gl_env.history_start].log_entry == NULL)
-        return gl_env.history_start;
-    else
-        return gl_env.history_size;
-}
-
-history_element_t *oldest_element_in_history()
-{
-    if (gl_env.history[gl_env.history_start].log_entry != NULL)
-    {
-        return &(gl_env.history[gl_env.history_start]);
-    }
-    else
-    {
-        if (gl_env.history_start == 0)
-            return NULL;
-        return &(gl_env.history[0]);
-    }
-}
-
-history_element_t *newest_element_in_history()
-{
-    int           newest_item_index;
-
-    newest_item_index = gl_env.history_start == 0
-        ? gl_env.history_size - 1
-        : gl_env.history_start - 1;
-    if (gl_env.history[newest_item_index].log_entry == NULL)
-        return NULL;
-    else
-        return &(gl_env.history[newest_item_index]);
-}
 
 void                  update_history(log_line *element)
 {
@@ -127,7 +90,7 @@ void    usage_and_exit(char* program_name)
     fprintf(stderr, "Usage: tail something |" \
             " %s [-s history_size]\n", program_name);
     fprintf(stderr, "    history_size: Number of log line to keep\n");
-    fprintf(stderr, "                  Defaults to 10000 lines.\n");
+    fprintf(stderr, "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE) " lines.\n");
     exit(EXIT_FAILURE);
 }
 
@@ -142,7 +105,7 @@ void    parse_args(int ac, char **av)
     int opt;
 
     gl_env.history_size = 0;
-    while ((opt = getopt(ac, av, "hvs:c:")) != -1)
+    while ((opt = getopt(ac, av, "hvs:")) != -1)
     {
         switch (opt)
         {
@@ -157,11 +120,16 @@ void    parse_args(int ac, char **av)
         }
     }
     if (gl_env.history_size == 0)
-        gl_env.history_size = 10000;
+        gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
 
+void init_data_structures()
+{
+    init_history();
+    init_avl();
+}
 
-int    main(int ac, char **av)
+int main(int ac, char **av)
 {
     parse_args(ac, av);
     init_data_structures();

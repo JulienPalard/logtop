@@ -49,10 +49,8 @@ static void    freeitem(void *element)
     free(element);
 }
 
-void    init_data_structures()
+void    init_avl()
 {
-    gl_env.history = (history_element_t*)calloc(sizeof(history_element_t),
-                                                gl_env.history_size);
     gl_env.history_start = 0;
     gl_env.last_update_time = time(NULL);
     gl_env.strings = avl_alloc_tree(compare_string, freeitem);

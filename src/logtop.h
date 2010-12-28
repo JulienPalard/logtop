@@ -30,6 +30,9 @@
 #include <time.h>
 
 #define UNUSED(x) x __attribute__((unused))
+#define __LOGTOP_STRINGIFY(x) #x
+#define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
+#define DEFAULT_HISTORY_SIZE 10000
 
 typedef struct   s_log_line
 {
@@ -39,7 +42,6 @@ typedef struct   s_log_line
     avl_node_t   *string_node;
     avl_node_t   *top_node;
 }                log_line;
-
 typedef struct s_history_element
 {
     log_line   *log_entry;
@@ -76,9 +78,5 @@ void     curses_release();
 void     curses_update();
 
 void     stdout_update();
-
-history_element_t *oldest_element_in_history();
-history_element_t *newest_element_in_history();
-unsigned int qte_of_elements_in_history();
 
 #endif

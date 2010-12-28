@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include "logtop.h"
+#include "history.h"
 
 void                    stdout_update()
 {
