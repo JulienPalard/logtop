@@ -26,25 +26,18 @@
 #ifndef __LOGTOP_H__
 #define __LOGTOP_H__
 
-#include <avl.h>
 #include <time.h>
+
+#include "avl.h"
 
 #define UNUSED(x) x __attribute__((unused))
 #define __LOGTOP_STRINGIFY(x) #x
 #define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
 #define DEFAULT_HISTORY_SIZE 10000
 
-typedef struct   s_log_line
-{
-    char         *string;
-    char         *repr;
-    unsigned int count;
-    avl_node_t   *string_node;
-    avl_node_t   *top_node;
-}                log_line;
 typedef struct s_history_element
 {
-    log_line   *log_entry;
+    log_line_t *log_entry;
     time_t     time;
 }              history_element_t;
 
@@ -69,14 +62,12 @@ extern env_t gl_env;
 ** Adds or increments a string in the AVL and returns its
 ** representing log_line
 */
-log_line *get_log_entry(char *);
-void     update_log_entry(log_line *);
-void     init_data_structures();
+log_line_t *get_log_entry(char *);
 
-void     curses_setup();
-void     curses_release();
-void     curses_update();
+void curses_setup();
+void curses_release();
+void curses_update();
 
-void     stdout_update();
+void stdout_update();
 
 #endif

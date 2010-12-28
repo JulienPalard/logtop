@@ -34,40 +34,12 @@
 
 env_t gl_env;
 
-void                  update_history(log_line *element)
+void           got_a_new_string(char *string)
 {
-    history_element_t *history_element;
-    log_line          *log_entry;
-
-    history_element = &(gl_env.history[gl_env.history_start]);
-    log_entry = history_element->log_entry;
-    if (log_entry != NULL)
-    {
-        log_entry->count--;
-        if (log_entry->count == 0)
-        {
-            avl_delete_node(gl_env.top, log_entry->top_node);
-            avl_delete_node(gl_env.strings, log_entry->string_node);
-        }
-        else
-        {
-            update_log_entry(log_entry);
-        }
-    }
-    gl_env.history[gl_env.history_start].log_entry = element;
-    gl_env.history[gl_env.history_start].time = time(NULL);
-    gl_env.history_start += 1;
-    if (gl_env.history_start >= gl_env.history_size)
-        gl_env.history_start = 0;
-}
-
-void         got_a_new_string(char *string)
-{
-    log_line *element;
+    log_line_t *element;
 
     element = get_log_entry(string);
-    element->count += 1;
-    update_log_entry(element);
+    increment_log_entry_count(element);
     update_history(element);
     curses_update();
 }
@@ -87,10 +59,12 @@ void       run()
 
 void    usage_and_exit(char* program_name)
 {
-    fprintf(stderr, "Usage: tail something |" \
-            " %s [-s history_size]\n", program_name);
-    fprintf(stderr, "    history_size: Number of log line to keep\n");
-    fprintf(stderr, "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE) " lines.\n");
+    fprintf(stderr,
+            "Usage: tail something | %s [-s history_size]\n"
+            "    history_size: Number of log line to keep in memory\n"
+            "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE) 
+	    " lines.\n",
+	    program_name);
     exit(EXIT_FAILURE);
 }
 
@@ -123,16 +97,11 @@ void    parse_args(int ac, char **av)
         gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
 
-void init_data_structures()
-{
-    init_history();
-    init_avl();
-}
-
 int main(int ac, char **av)
 {
     parse_args(ac, av);
-    init_data_structures();
+    init_history();
+    init_avl();
     curses_setup();
     run();
     curses_release();

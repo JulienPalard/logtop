@@ -52,7 +52,7 @@ void                    curses_update()
     unsigned int        i;
     time_t              current_time;
     double              duration;
-    log_line            *log_entry;
+    log_line_t          *log_entry;
     history_element_t   *oldest_element;
     history_element_t   *newest_element;
     unsigned int        qte_of_elements;
@@ -85,7 +85,7 @@ void                    curses_update()
          node != NULL && i < gl_env.display_height;
          node = node->next)
     {
-        log_entry = (log_line*)node->item;
+        log_entry = (log_line_t*)node->item;
         if (duration > 0)
         {
             mvprintw(i, 0, "%4d %4d %4.2f/s %s",

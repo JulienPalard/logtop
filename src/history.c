@@ -40,6 +40,22 @@ history_element_t *newest_element_in_history()
         return &(gl_env.history[newest_item_index]);
 }
 
+void                  update_history(log_line_t *element)
+{
+    history_element_t *history_element;
+    log_line_t        *log_entry;
+
+    history_element = &(gl_env.history[gl_env.history_start]);
+    log_entry = history_element->log_entry;
+    if (log_entry != NULL)
+        decrement_log_entry_count(log_entry);
+    gl_env.history[gl_env.history_start].log_entry = element;
+    gl_env.history[gl_env.history_start].time = time(NULL);
+    gl_env.history_start += 1;
+    if (gl_env.history_start >= gl_env.history_size)
+        gl_env.history_start = 0;
+}
+
 void init_history()
 {
     gl_env.history = (history_element_t*)calloc(sizeof(history_element_t),

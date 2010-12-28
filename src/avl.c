@@ -29,31 +29,32 @@
 
 #include "logtop.h"
 
-static int    compare_string(const void *element1, const void *element2)
+static int compare_log_lines_string(const void *log_line1,
+				    const void *log_line2)
 {
-    return (strcmp(((log_line*)element1)->string,
-                   ((log_line*)element2)->string));
+    return (strcmp(((log_line_t*)log_line1)->string,
+                   ((log_line_t*)log_line2)->string));
 }
 
-static int    compare_count(const void *element1, const void *element2)
+static int    compare_count(const void *log_line1, const void *log_line2)
 {
-    if (((log_line*)element1)->count == ((log_line*)element2)->count)
-    return (long)element1 - (long)element2;
-    return (((log_line*)element2)->count - ((log_line*)element1)->count);
+    if (((log_line_t*)log_line1)->count == ((log_line_t*)log_line2)->count)
+    return (long)log_line1 - (long)log_line2;
+    return (((log_line_t*)log_line2)->count - ((log_line_t*)log_line1)->count);
 }
 
-static void    freeitem(void *element)
+static void    freeitem(void *log_line)
 {
-    free(((log_line*)element)->string);
-    free(((log_line*)element)->repr);
-    free(element);
+    free(((log_line_t*)log_line)->string);
+    free(((log_line_t*)log_line)->repr);
+    free(log_line);
 }
 
 void    init_avl()
 {
     gl_env.history_start = 0;
     gl_env.last_update_time = time(NULL);
-    gl_env.strings = avl_alloc_tree(compare_string, freeitem);
+    gl_env.strings = avl_alloc_tree(compare_log_lines_string, freeitem);
     gl_env.top = avl_alloc_tree(compare_count, NULL);
     if (gl_env.strings == NULL || gl_env.top == NULL)
     {
@@ -69,12 +70,12 @@ void die()
     exit(EXIT_FAILURE);
 }
 
-log_line     *create_log_entry(char *string)
+log_line_t     *create_log_entry(char *string)
 {
-    log_line *entry;
-    int      i;
+    log_line_t *entry;
+    int        i;
 
-    entry = (log_line*)malloc(sizeof(log_line));
+    entry = (log_line_t*)malloc(sizeof(*entry));
     if (entry == NULL)
         die();
     entry->count = 0;
@@ -93,15 +94,15 @@ log_line     *create_log_entry(char *string)
     return entry;
 }
 
-log_line       *get_log_entry(char *string)
+log_line_t     *get_log_entry(char *string)
 {
-    avl_node_t    *node;
-    log_line   search;
+    avl_node_t *node;
+    log_line_t search;
 
     search.string = string;
     node = avl_search(gl_env.strings, &search);
     if (node != NULL)
-        return (log_line*)node->item;
+        return (log_line_t*)node->item;
     else
         return create_log_entry(string);
 }
@@ -111,8 +112,28 @@ log_line       *get_log_entry(char *string)
 ** The only solution to update the tree, is to unlink and reinsert
 ** the entry in the tree.
 */
-void    update_log_entry(log_line *log_entry)
+static void update_log_entry(log_line_t *log_entry)
 {
     avl_unlink_node(gl_env.top, log_entry->top_node);
     avl_insert_node(gl_env.top, log_entry->top_node);
+}
+
+void increment_log_entry_count(log_line_t *log_entry)
+{
+    log_entry->count += 1;
+    update_log_entry(log_entry);
+}
+
+void decrement_log_entry_count(log_line_t *log_entry)
+{
+    log_entry->count -= 1;
+    if (log_entry->count == 0)
+    {
+        avl_delete_node(gl_env.top, log_entry->top_node);
+        avl_delete_node(gl_env.strings, log_entry->string_node);
+    }
+    else
+    {
+        update_log_entry(log_entry);
+    }
 }

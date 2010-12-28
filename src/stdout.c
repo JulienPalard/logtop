@@ -34,7 +34,7 @@ void                    stdout_update()
     history_element_t   *oldest_element;
     history_element_t   *newest_element;
     double              duration;
-    log_line         *log_entry;
+    log_line_t          *log_entry;
     unsigned int        qte_of_elements;
 
     duration = 0;
@@ -56,7 +56,7 @@ void                    stdout_update()
          node != NULL && i < gl_env.display_height;
          node = node->next)
     {
-        log_entry = (log_line*)node->item;
+        log_entry = (log_line_t*)node->item;
         if (duration > 0)
         {
             printf("%4d %4d %4.2f/s %s\n",
