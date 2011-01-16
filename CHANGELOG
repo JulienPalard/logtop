@@ -1,0 +1,142 @@
+commit 7d02ea927e14beeb32322edfb939c6a616c03013
+Author: mandark <mandark@epi.(none)>
+Date:   Sun Dec 12 20:57:50 2010 +0100
+
+    FIX: More verbose help statement
+    FIX: Removing deprecated initialisation of value while parsing arguments
+
+commit 376223e482df8472da2d6b06e833e2e66a1e8ef5
+Author: mandark <mandark@epi.(none)>
+Date:   Sun Dec 12 20:52:37 2010 +0100
+
+    FIX: Fixing help to remove deprecated -c parameter
+
+commit 0d1d7d82611648ff3154bd197ff988a76dc3f0d1
+Author: mandark <mandark@epi.(none)>
+Date:   Sun Dec 12 20:51:31 2010 +0100
+
+    ADD: Compile dependencies in README file
+
+commit 284f3af56138e4e6adf506535dc693682d7620af
+Author: Julien <github@mandark.fr>
+Date:   Sun Dec 12 00:18:40 2010 +0100
+
+    NEW: Use ioctl to determine display height.
+
+commit 58f564d6d68f5228c148a844b4d03ab503216710
+Author: Julien <github@mandark.fr>
+Date:   Sun Dec 5 20:13:58 2010 +0100
+
+    Adding make install and a man
+
+commit aba37c9245bbf5ce28dbbfcaf0c6c6aac85cd0ca
+Author: Julien <github@mandark.fr>
+Date:   Sun Dec 5 20:13:02 2010 +0100
+
+    Adding -v to get version and -h to get some help
+
+commit 970f620b73e40f94e5f6245534d3b0e7180be697
+Author: Julien <github@mandark.fr>
+Date:   Sun Dec 5 19:25:56 2010 +0100
+
+    Fine tuning visualisation
+
+commit 95db9a66c4549788ba2e9d64f4d7ee70b9742349
+Author: Julien <github@mandark.fr>
+Date:   Fri Dec 3 09:57:41 2010 +0100
+
+    FIX: Replace specials chars like \r to dots to ensure graphical concistency
+
+commit a0fd59d126de96d04d5851aa5ff10171c03d0ee5
+Author: Julien <github@mandark.fr>
+Date:   Sun Nov 14 22:22:03 2010 +0100
+
+    FIX: display_height was non used in stdout display
+
+commit 88cc21b818e845bba96d96c89327ac9a049dbe1b
+Author: Julien <github@mandark.fr>
+Date:   Sun Nov 14 15:30:46 2010 +0100
+
+    Style improvment and renaming
+
+commit edd3d8f524398ebb0bd429f0eef1b5dd00c8bc64
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 21:45:03 2010 +0100
+
+    Improving a bit the UI adding the number of log lines read by second ...
+    
+    On my box, a
+    $ strings /dev/urandom | ./logtop -s 100000
+    gaves me :
+    80% CPU for strings
+    20% CPU for logtop
+    12000 lines/seconds, no memory leak.
+
+commit 92c00f7b1111715250e40c11d13df4569ed30f25
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 21:27:32 2010 +0100
+
+    Oops just forgotten -lefence in da Makefile :p
+
+commit d3e2bf9c440466b2561232234aa45bb4c9a3f96b
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 21:24:51 2010 +0100
+
+    Fix a bug in "get_newest_element_in_history"
+
+commit 2a536c2f7731f7730892048f3cf2ecb504bd2fc6
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 21:09:49 2010 +0100
+
+    Fixing headers
+
+commit abc4cef173494d5c3894c67aacaafcd39d0b2d94
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 17:32:20 2010 +0100
+
+    NEW: Now displaying loglines by seconds as :
+    917 25/s    foobar
+
+commit d1079f610a3854aaf6febabd04b80410e8012413
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 15:33:54 2010 +0100
+
+    ADD: Each history entity is now dated, i'll can add some feature like
+         a rotation by duration.
+
+commit c1961bbb78e34b09f9920be07097da8dc02ab1df
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 15:06:13 2010 +0100
+
+    FIX: Bug during optparse
+
+commit c028e4e87447f82f9aebba12b1b90490418b24b1
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 15:00:27 2010 +0100
+
+    Adding two new files after splitting source
+
+commit 1dee8e7856af88895bbb8ff33073e3a0c88c6af9
+Author: Julien <github@mandark.fr>
+Date:   Sat Nov 13 14:59:28 2010 +0100
+
+    ADD: Dump last view on stdout leaving
+    FIX: Restore curses leaving
+
+commit a7f64ba9a94926e191812a1f4100fa2ecc18f55e
+Author: Julien <github@mandark.fr>
+Date:   Thu Jul 1 19:17:10 2010 +0200
+
+    Add usage sample to the README
+
+commit 7a8820bd67927891183ecfd1219d1194df201bec
+Author: Julien <github@mandark.fr>
+Date:   Thu Jul 1 19:09:12 2010 +0200
+
+    Updating README : Adding dependencies
+
+commit ba0a8d9b310f8aeefbd226aaca33076d7696a3fa
+Author: Julien <github@mandark.fr>
+Date:   Thu Jul 1 19:05:05 2010 +0200
+
+    EHLO World
