@@ -46,44 +46,51 @@ void    curses_release()
     endwin();
 }
 
-struct line_data
+struct line_metadata
 {
     double duration;
 };
 
-static void display_line(log_line_t *line, int index,
-                         struct line_data *user_data)
+static void display_line_with_freq(void *data, int index, void *metadata)
 {
-    if (user_data->duration > 0)
-    {
-        mvprintw(index, 0, "%4d %4d %4.2f/s %s",
-                 index,
-                 line->count,
-                 line->count / (double)user_data->duration,
-                 line->repr);
-    }
-    else
-    {
-        mvprintw(index, 0, "%4d %4d %s",
-                 index,
-                 line->count,
-                 line->repr);
-    }
+    log_line_t *line;
+    double     duration;
+
+    line = (log_line_t *)data;
+    duration = ((struct line_metadata *)metadata)->duration;
+    mvprintw(index, 0, "%4d %4d %4.2f/s %s",
+             index,
+             line->count,
+             line->count / duration,
+             line->repr);
 }
 
-void                    curses_update()
+static void display_line_without_freq(void *data, int index, void *metadata)
 {
-    struct line_data    line_data;
-    time_t              current_time;
-    history_element_t   *oldest_element;
-    history_element_t   *newest_element;
-    unsigned int        qte_of_elements;
+    log_line_t *line;
+
+    (void) metadata;
+    line = (log_line_t *)data;
+    mvprintw(index, 0, "%4d %4d %s",
+             index,
+             line->count,
+             line->repr);
+}
+
+void                     curses_update()
+{
+    struct line_metadata line_data;
+    time_t               current_time;
+    history_element_t    *oldest_element;
+    history_element_t    *newest_element;
+    unsigned int         qte_of_elements;
 
     line_data.duration = 0;
     oldest_element = oldest_element_in_history();
     newest_element = newest_element_in_history();
     if (oldest_element != NULL && newest_element != NULL)
-        line_data.duration = difftime(newest_element->time, oldest_element->time);
+        line_data.duration = difftime(newest_element->time,
+                                      oldest_element->time);
     current_time = time(NULL);
     if (current_time == gl_env.last_update_time)
         return;
@@ -99,8 +106,11 @@ void                    curses_update()
         mvprintw(0, 0, "%d elements in %d seconds\n",
                  qte_of_elements,
                  (unsigned int)line_data.duration);
-    traverse_log_lines(gl_env.top, gl_env.display_height,
-             (void (*)(void *data, int index, void *user_data))display_line,
-             &line_data);
+    if (line_data.duration > 0)
+        traverse_log_lines(gl_env.top, gl_env.display_height,
+                           display_line_with_freq, &line_data);
+    else
+        traverse_log_lines(gl_env.top, gl_env.display_height,
+                           display_line_without_freq, &line_data);
     refresh();
 }
