@@ -38,22 +38,25 @@ void           got_a_new_string(char *string)
 {
     log_line_t *element;
 
-    string[strlen(string) - 1] = '\0'; /* Drop '\n' */
     element = get_log_entry(string);
     increment_log_entry_count(element);
     update_history(element);
     curses_update();
 }
 
-void       run()
+void        run()
 {
-    char   *string;
-    size_t size;
+    char    *string;
+    size_t  size;
+    ssize_t str_length;
 
     string = NULL;
     size = 0;
-    while (getline(&string, &size, stdin) != -1)
+    while ((str_length = getline(&string, &size, stdin)) != -1)
+    {
+        string[str_length - 1] = '\0';
         got_a_new_string(string);
+    }
     if (string != NULL)
         free(string);
 }
