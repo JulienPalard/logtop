@@ -31,9 +31,11 @@
 #include "avl.h"
 #include "history.h"
 
-#define UNUSED(x) x __attribute__((unused))
-#define __LOGTOP_STRINGIFY(x) #x
-#define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
+#ifndef STRINGIFY
+#  define __LOGTOP_STRINGIFY(x) #x
+#  define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
+#endif
+
 #define DEFAULT_HISTORY_SIZE 10000
 
 typedef struct        s_env
