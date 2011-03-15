@@ -63,7 +63,8 @@ void                    stdout_update()
     oldest_element = oldest_element_in_history();
     newest_element = newest_element_in_history();
     if (oldest_element != NULL && newest_element != NULL)
-        line_data.duration = difftime(newest_element->time, oldest_element->time);
+        line_data.duration = difftime(newest_element->time,
+                                      oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
     if (line_data.duration > 0)
         printf("%d elements in %d seconds (%.2f elements/s)\n",
@@ -73,7 +74,7 @@ void                    stdout_update()
     else
         printf("%d elements\n",
                qte_of_elements);
-    traverse_log_lines(gl_env.top, gl_env.display_height,
+    traverse_log_lines(gl_env.top, gl_env.display_height - 6,
              (void (*)(void *data, int index, void *user_data))display_line,
              &line_data);
 }
