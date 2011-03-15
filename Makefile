@@ -7,12 +7,12 @@
 
 NAME = logtop
 DSRC = src
-SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/history.c $(DSRC)/curses.c $(DSRC)/stdout.c
+SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/history.c $(DSRC)/curses.c $(DSRC)/stdout.c $(DSRC)/libavl/avl.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .
 DEFINE = _GNU_SOURCE
-LIB = -lavl -lncurses #-lefence
+LIB = -lncurses #-lefence
 CFLAGS = -fPIC -g3 -O3 -W -Wall -ansi -pedantic -I$(INCLUDE)
 RM = rm -f
 

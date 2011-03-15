@@ -26,19 +26,21 @@
 #ifndef __AVL_H__
 #define __AVL_H__
 
-#include <avl.h>
+#include "libavl/avl.h"
 
 typedef struct   s_log_line
 {
     char         *string;
     char         *repr;
     unsigned int count;
-    avl_node_t   *string_node;
-    avl_node_t   *top_node;
 }                log_line_t;
 
 void init_avl();
+log_line_t *get_log_entry(char *);
 void increment_log_entry_count(log_line_t *);
 void decrement_log_entry_count(log_line_t *);
+void traverse_log_lines(struct avl_table *tree, unsigned int length,
+              void (*visitor)(void *data, int index, void *user_data),
+              void *user_data);
 
 #endif

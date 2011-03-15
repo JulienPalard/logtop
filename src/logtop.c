@@ -63,7 +63,7 @@ void    usage_and_exit(char* program_name)
     fprintf(stderr,
             "Usage: tail something | %s [-s history_size]\n"
             "    history_size: Number of log line to keep in memory\n"
-            "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE) 
+            "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE)
 	    " lines.\n",
 	    program_name);
     exit(EXIT_FAILURE);

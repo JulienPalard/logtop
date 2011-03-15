@@ -38,8 +38,8 @@
 
 typedef struct        s_env
 {
-    avl_tree_t        *strings;
-    avl_tree_t        *top;
+    struct avl_table  *strings;
+    struct avl_table  *top;
     history_element_t *history;
     unsigned int      history_start;
     unsigned int      history_size;
@@ -48,8 +48,6 @@ typedef struct        s_env
 }                     env_t;
 
 extern env_t gl_env;
-
-log_line_t *get_log_entry(char *);
 
 void curses_setup();
 void curses_release();

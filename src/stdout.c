@@ -27,51 +27,53 @@
 #include "logtop.h"
 #include "history.h"
 
+struct line_data
+{
+    double duration;
+};
+
+static void display_line(log_line_t *line, int index,
+                         struct line_data *user_data)
+{
+   if (user_data->duration > 0)
+   {
+       printf("%4d %4d %4.2f/s %s\n",
+              index + 1,
+              line->count,
+              line->count / (double)user_data->duration,
+              line->repr);
+   }
+   else
+   {
+       printf("%4d %4d %s\n",
+              index + 1,
+              line->count,
+              line->repr);
+   }
+}
+
 void                    stdout_update()
 {
-    avl_node_t          *node;
-    unsigned int        i;
     history_element_t   *oldest_element;
     history_element_t   *newest_element;
-    double              duration;
-    log_line_t          *log_entry;
+    struct line_data    line_data;
     unsigned int        qte_of_elements;
 
-    duration = 0;
+    line_data.duration = 0;
     oldest_element = oldest_element_in_history();
     newest_element = newest_element_in_history();
     if (oldest_element != NULL && newest_element != NULL)
-        duration = difftime(newest_element->time, oldest_element->time);
-    i = 0;
+        line_data.duration = difftime(newest_element->time, oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
-    if (duration > 0)
+    if (line_data.duration > 0)
         printf("%d elements in %d seconds (%.2f elements/s)\n",
                qte_of_elements,
-               (unsigned int)duration,
-               qte_of_elements / (double)duration);
+               (unsigned int)line_data.duration,
+               qte_of_elements / (double)line_data.duration);
     else
         printf("%d elements\n",
                qte_of_elements);
-    for (node = gl_env.top->head;
-         node != NULL && i < gl_env.display_height;
-         node = node->next)
-    {
-        log_entry = (log_line_t*)node->item;
-        if (duration > 0)
-        {
-            printf("%4d %4d %4.2f/s %s\n",
-                   i + 1,
-                   log_entry->count,
-                   log_entry->count / (double)duration,
-                   log_entry->repr);
-        }
-        else
-        {
-            printf("%4d %4d %s\n",
-                   i + 1,
-                   log_entry->count,
-                   log_entry->repr);
-        }
-        i += 1;
-    }
+    traverse_log_lines(gl_env.top, gl_env.display_height,
+             (void (*)(void *data, int index, void *user_data))display_line,
+             &line_data);
 }
