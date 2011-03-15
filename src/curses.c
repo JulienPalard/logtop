@@ -56,13 +56,16 @@ static void display_line_with_freq(void *data, int index, void *metadata)
     log_line_t *line;
     double     duration;
 
-    line = (log_line_t *)data;
-    duration = ((struct line_metadata *)metadata)->duration;
-    mvprintw(index, 0, "%4d %4d %4.2f/s %s",
-             index,
-             line->count,
-             line->count / duration,
-             line->repr);
+    if (data != NULL)
+    {
+        line = (log_line_t *)data;
+        duration = ((struct line_metadata *)metadata)->duration;
+        mvprintw(index, 0, "%4d %4d %4.2f/s %s",
+                 index,
+                 line->count,
+                 line->count / duration,
+                 line->repr);
+    }
 }
 
 static void display_line_without_freq(void *data, int index, void *metadata)
@@ -70,11 +73,14 @@ static void display_line_without_freq(void *data, int index, void *metadata)
     log_line_t *line;
 
     (void) metadata;
-    line = (log_line_t *)data;
-    mvprintw(index, 0, "%4d %4d %s",
-             index,
-             line->count,
-             line->repr);
+    if (data != NULL)
+    {
+        line = (log_line_t *)data;
+        mvprintw(index, 0, "%4d %4d %s",
+                 index,
+                 line->count,
+                 line->repr);
+    }
 }
 
 void                     curses_update()
