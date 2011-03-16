@@ -73,7 +73,11 @@ void                  update_history(log_line_t *element)
     history_element = &(gl_env.history[gl_env.history_start]);
     log_entry = history_element->log_entry;
     if (log_entry != NULL)
-        decrement_log_entry_count(log_entry);
+    {
+        top_decrement(gl_env.top, log_entry);
+        if (log_entry->count == 0)
+            delete_log_entry(log_entry);
+    }
     gl_env.history[gl_env.history_start].log_entry = element;
     gl_env.history[gl_env.history_start].time = time(NULL);
     gl_env.history_start += 1;

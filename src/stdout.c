@@ -40,7 +40,7 @@ static void display_line_with_freq(void *data, int index, void *metadata)
     line = (log_line_t *)data;
     duration = ((struct line_metadata *)metadata)->duration;
     printf("%4d %4d %4.2f/s %s\n",
-           index,
+           index + 1,
            line->count,
            line->count / duration,
            line->repr);
@@ -54,7 +54,7 @@ static void display_line_without_freq(void *data, int index,
     (void) metadata;
     line = (log_line_t *)data;
     printf("%4d %4d %s\n",
-           index,
+           index + 1,
            line->count,
            line->repr);
 }
@@ -82,9 +82,9 @@ void                     stdout_update()
         printf("%d elements\n",
                qte_of_elements);
     if (line_metadata.duration > 0)
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+        traverse_log_lines(gl_env.display_height - 1,
                            display_line_with_freq, &line_metadata);
     else
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+        traverse_log_lines(gl_env.display_height - 1,
                            display_line_without_freq, &line_metadata);
 }

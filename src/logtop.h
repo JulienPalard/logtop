@@ -29,6 +29,7 @@
 #include <time.h>
 
 #include "avl.h"
+#include "top.h"
 #include "history.h"
 
 #ifndef STRINGIFY
@@ -41,7 +42,7 @@
 typedef struct        s_env
 {
     struct avl_table  *strings;
-    struct avl_table  *top;
+    top_t             *top;
     history_element_t *history;
     unsigned int      history_start;
     unsigned int      history_size;

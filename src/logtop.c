@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <sys/ioctl.h>
 #include "logtop.h"
 #include "history.h"
 #include "avl.h"
@@ -39,7 +40,7 @@ void           got_a_new_string(char *string)
     log_line_t *element;
 
     element = get_log_entry(string);
-    increment_log_entry_count(element);
+    top_increment(gl_env.top, element);
     update_history(element);
     curses_update();
 }
@@ -78,6 +79,17 @@ void    version_and_exit(char* program_name)
     exit(EXIT_FAILURE);
 }
 
+void get_display_height()
+{
+    struct winsize ws;
+
+    if (ioctl(1, TIOCGWINSZ, &ws) == -1)
+        gl_env.display_height = 24;
+    else
+        gl_env.display_height = ws.ws_row;
+}
+
+
 void    parse_args(int ac, char **av)
 {
     int opt;
@@ -104,8 +116,10 @@ void    parse_args(int ac, char **av)
 int main(int ac, char **av)
 {
     parse_args(ac, av);
+    get_display_height();
     init_history();
     init_avl();
+    gl_env.top = top_init(gl_env.history_size);
     curses_setup();
     run();
     curses_release();

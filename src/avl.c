@@ -29,28 +29,13 @@
 
 #include "logtop.h"
 
-static int compare_log_lines_string(const void *log_line1,
-                                    const void *log_line2,
+static int compare_log_lines(const void *log_line1,
+                             const void *log_line2,
     void *avl_param)
 {
     (void) avl_param;
     return (strcmp(((log_line_t*)log_line1)->string,
                    ((log_line_t*)log_line2)->string));
-}
-
-static int compare_log_lines_count(const void *log_line1,
-                                   const void *log_line2,
-    void *avl_param)
-{
-    (void) avl_param;
-    if (((log_line_t*)log_line1)->count != ((log_line_t*)log_line2)->count)
-    {
-        if (((log_line_t*)log_line2)->count > ((log_line_t*)log_line1)->count)
-            return 1;
-        else
-            return -1;
-    }
-    return compare_log_lines_string(log_line1, log_line2, NULL);
 }
 
 static void die()
@@ -89,11 +74,11 @@ static log_line_t *create_log_entry(char *string)
     if (entry->repr == NULL)
         die();
     avl_insert(gl_env.strings, entry);
-    avl_insert(gl_env.top, entry);
+    top_insert(gl_env.top, entry);
     return entry;
 }
 
-static void delete_log_entry(log_line_t *log_entry)
+void delete_log_entry(log_line_t *log_entry)
 {
     log_line_t *deleted;
 
@@ -103,12 +88,12 @@ static void delete_log_entry(log_line_t *log_entry)
     free(deleted);
 }
 
-void    init_avl()
+void init_avl()
 {
     gl_env.history_start = 0;
     gl_env.last_update_time = time(NULL);
-    gl_env.strings = avl_create(compare_log_lines_string, NULL, NULL);
-    gl_env.top = avl_create(compare_log_lines_count, NULL, NULL);
+    gl_env.strings = avl_create(compare_log_lines, NULL, NULL);
+    gl_env.top = calloc(gl_env.history_size, sizeof(*gl_env.top));
     if (gl_env.strings == NULL || gl_env.top == NULL)
     {
         fputs("Not enough memory to create storage", stderr);
@@ -129,36 +114,12 @@ log_line_t *get_log_entry(char *string)
         return create_log_entry(string);
 }
 
-void increment_log_entry_count(log_line_t *log_entry)
+void traverse_log_lines(unsigned int length,
+                        void (*visitor)(void *data, int index, void *user_data),
+                        void *user_data)
 {
-    avl_delete(gl_env.top, log_entry);
-    log_entry->count += 1;
-    avl_insert(gl_env.top, log_entry);
-}
+    unsigned int i;
 
-void decrement_log_entry_count(log_line_t *log_entry)
-{
-    avl_delete(gl_env.top, log_entry);
-    log_entry->count -= 1;
-    if (log_entry->count != 0)
-        avl_insert(gl_env.top, log_entry);
-    else
-        delete_log_entry(log_entry);
-}
-
-void traverse_log_lines(struct avl_table *tree, unsigned int length,
-              void (*visitor)(void *data, int index, void *user_data),
-              void *user_data)
-{
-    struct avl_traverser trav;
-    void                 *node;
-    unsigned int         last;
-
-    last = length;
-    node = avl_t_first(&trav, tree);
-    while (length-- > 0 && node != NULL)
-    {
-        visitor(node, last - length, user_data);
-        node = avl_t_next(&trav);
-    }
+    for (i = 0; i < length && i < gl_env.top->count; ++i)
+        visitor(gl_env.top->items[i], i, user_data);
 }

@@ -25,18 +25,11 @@
 
 #include <ncurses.h>
 #include <curses.h>
-#include <sys/ioctl.h>
 #include "logtop.h"
 #include "history.h"
 
 void               curses_setup()
 {
-    struct winsize ws;
-
-    if (ioctl(1, TIOCGWINSZ, &ws) == -1)
-        gl_env.display_height = 24;
-    else
-        gl_env.display_height = ws.ws_row;
     initscr();
     curs_set(0);
 }
@@ -58,8 +51,8 @@ static void display_line_with_freq(void *data, int index, void *metadata)
 
     line = (log_line_t *)data;
     duration = ((struct line_metadata *)metadata)->duration;
-    mvprintw(index, 0, "%4d %4d %4.2f/s %s",
-             index,
+    mvprintw(index + 1, 0, "%4d %4d %4.2f/s %s",
+             index + 1,
              line->count,
              line->count / duration,
              line->repr);
@@ -71,8 +64,8 @@ static void display_line_without_freq(void *data, int index, void *metadata)
 
     (void) metadata;
     line = (log_line_t *)data;
-    mvprintw(index, 0, "%4d %4d %s",
-             index,
+    mvprintw(index + 1, 0, "%4d %4d %s",
+             index + 1,
              line->count,
              line->repr);
 }
@@ -107,10 +100,10 @@ void                     curses_update()
                  qte_of_elements,
                  (unsigned int)line_data.duration);
     if (line_data.duration > 0)
-        traverse_log_lines(gl_env.top, gl_env.display_height,
+        traverse_log_lines(gl_env.display_height,
                            display_line_with_freq, &line_data);
     else
-        traverse_log_lines(gl_env.top, gl_env.display_height,
+        traverse_log_lines(gl_env.display_height,
                            display_line_without_freq, &line_data);
     refresh();
 }

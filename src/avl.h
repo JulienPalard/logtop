@@ -33,14 +33,14 @@ typedef struct   s_log_line
     char         *string;
     char         *repr;
     unsigned int count;
+    unsigned int top_position;
 }                log_line_t;
 
 void init_avl();
 log_line_t *get_log_entry(char *);
-void increment_log_entry_count(log_line_t *);
-void decrement_log_entry_count(log_line_t *);
-void traverse_log_lines(struct avl_table *tree, unsigned int length,
-              void (*visitor)(void *data, int index, void *user_data),
-              void *user_data);
+void delete_log_entry(log_line_t *log_entry);
+void traverse_log_lines(unsigned int length,
+                        void (*visitor)(void *data, int index, void *user_data),
+                        void *user_data);
 
 #endif
