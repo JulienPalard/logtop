@@ -43,9 +43,14 @@ static int compare_log_lines_count(const void *log_line1,
     void *avl_param)
 {
     (void) avl_param;
-    if (((log_line_t*)log_line1)->count == ((log_line_t*)log_line2)->count)
-        return compare_log_lines_string(log_line1, log_line2, NULL);
-    return (((log_line_t*)log_line2)->count - ((log_line_t*)log_line1)->count);
+    if (((log_line_t*)log_line1)->count != ((log_line_t*)log_line2)->count)
+    {
+        if (((log_line_t*)log_line2)->count > ((log_line_t*)log_line1)->count)
+            return 1;
+        else
+            return -1;
+    }
+    return compare_log_lines_string(log_line1, log_line2, NULL);
 }
 
 static void die()
@@ -92,22 +97,10 @@ static void delete_log_entry(log_line_t *log_entry)
 {
     log_line_t *deleted;
 
-    avl_delete(gl_env.top, log_entry);
     deleted = (log_line_t *)avl_delete(gl_env.strings, log_entry);
     free(deleted->string);
     free(deleted->repr);
     free(deleted);
-}
-
-/*
-** The entry count have changed :
-** The only solution to update a binary tree is to unlink and reinsert
-** the entry in the tree.
-*/
-static void update_log_entry(log_line_t *log_entry)
-{
-    avl_delete(gl_env.top, log_entry);
-    avl_insert(gl_env.top, log_entry);
 }
 
 void    init_avl()
@@ -138,17 +131,19 @@ log_line_t *get_log_entry(char *string)
 
 void increment_log_entry_count(log_line_t *log_entry)
 {
+    avl_delete(gl_env.top, log_entry);
     log_entry->count += 1;
-    update_log_entry(log_entry);
+    avl_insert(gl_env.top, log_entry);
 }
 
 void decrement_log_entry_count(log_line_t *log_entry)
 {
+    avl_delete(gl_env.top, log_entry);
     log_entry->count -= 1;
-    if (log_entry->count == 0)
-        delete_log_entry(log_entry);
+    if (log_entry->count != 0)
+        avl_insert(gl_env.top, log_entry);
     else
-        update_log_entry(log_entry);
+        delete_log_entry(log_entry);
 }
 
 void traverse_log_lines(struct avl_table *tree, unsigned int length,
@@ -161,7 +156,7 @@ void traverse_log_lines(struct avl_table *tree, unsigned int length,
 
     last = length;
     node = avl_t_first(&trav, tree);
-    while (length-- > 0)
+    while (length-- > 0 && node != NULL)
     {
         visitor(node, last - length, user_data);
         node = avl_t_next(&trav);

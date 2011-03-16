@@ -37,16 +37,13 @@ static void display_line_with_freq(void *data, int index, void *metadata)
     log_line_t *line;
     double     duration;
 
-    if (data != NULL)
-    {
-        line = (log_line_t *)data;
-        duration = ((struct line_metadata *)metadata)->duration;
-        printf("%4d %4d %4.2f/s %s\n",
-               index,
-               line->count,
-               line->count / duration,
-               line->repr);
-    }
+    line = (log_line_t *)data;
+    duration = ((struct line_metadata *)metadata)->duration;
+    printf("%4d %4d %4.2f/s %s\n",
+           index,
+           line->count,
+           line->count / duration,
+           line->repr);
 }
 
 static void display_line_without_freq(void *data, int index,
@@ -55,14 +52,11 @@ static void display_line_without_freq(void *data, int index,
     log_line_t *line;
 
     (void) metadata;
-    if (data != NULL)
-    {
-        line = (log_line_t *)data;
-        printf("%4d %4d %s\n",
-               index,
-               line->count,
-               line->repr);
-    }
+    line = (log_line_t *)data;
+    printf("%4d %4d %s\n",
+           index,
+           line->count,
+           line->repr);
 }
 
 void                     stdout_update()
@@ -92,5 +86,5 @@ void                     stdout_update()
                            display_line_with_freq, &line_metadata);
     else
         traverse_log_lines(gl_env.top, gl_env.display_height - 1,
-                            display_line_without_freq, &line_metadata);
+                           display_line_without_freq, &line_metadata);
 }
