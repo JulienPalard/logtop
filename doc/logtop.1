@@ -2,22 +2,23 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH LOGTOP 1 "December 27, 2010"
+.TH LOGTOP 1 "April 16, 2011"
 .\" Please adjust this date whenever revising the manpage.
 .SH "NAME"
 logtop \- Realtime log line rate analyser
 .SH "SYNOPSIS"
 .B logtop
-[\fIOPTION\fR]... [\fIFILE\fR]...
+.RI [ OPTIONS ]
+.RI [ FILE ]
 .SH "DESCRIPTION"
  \fBlogtop\fP is a System Administrator tool to analyze line rate taking log
  file as input. It reads on stdin and print a constantly updated result
- using curses, displaying in columns:
+ displaying, in columns:
  Line number, count, frequency, and the actual line.
 
-  $ tail -f FILE | \fBlogtop\fP
+  $ tail \-f FILE | \fBlogtop\fP
  is the friendly version of:
-  $ watch 'tail FILE | sort | uniq -c | sort -gr'
+  $ watch 'tail FILE | sort | uniq \-c | sort \-gr'
 .PP
 .SH "OPTIONS"
 .TP
@@ -35,21 +36,21 @@ Show version of program.
 Here are some \fBlogtop\fP usage examples.
 .PP
 .PP
-\fBtail -f cache.log | grep -o "HIT\\|MISS" | logtop\fR
+\fBtail \-f cache.log | grep \-o "HIT\\|MISS" | logtop\fR
 .PP
 Realtime hit / miss ratio on some caching software log file.
 .PP
-\fBtail -f access.log | cut -d' ' -f1 | logtop -s 10000\fR
+\fBtail \-f access.log | cut \-d' ' \-f1 | logtop \-s 10000\fR
 .PP
 Realtime most querying IPs on your server, as long as log lines in access.log starts with the client IP.
 .PP
-\fBtail -f access.log | cut -d' ' -f7 | logtop -s 10000\fR
+\fBtail \-f access.log | cut \-d' ' \-f7 | logtop \-s 10000\fR
 .PP
 Realtime most requested web pages in a NCSA like log file.
 .PP
-\fBcat auth.log | grep -v "CRON" | grep -o ": .*" | logtop -s 100000\fR
+\fBcat auth.log | grep \-v "CRON" | grep \-o ": .*" | logtop \-s 100000\fR
 .PP
-Display a one-shot simple analyse of your auth.log.
+Display a one\-shot simple analyse of your auth.log.
 .SH "SEE ALSO"
 .BR watch (1)
 .br
