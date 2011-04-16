@@ -25,52 +25,66 @@
 
 #include <stdio.h>
 #include "logtop.h"
+#include "history.h"
 
-void                    stdout_update()
+struct line_metadata
 {
-    avl_node_t          *node;
-    unsigned int        i;
-    history_element_t   *oldest_element;
-    history_element_t   *newest_element;
-    double              duration;
-    log_line         *log_entry;
-    unsigned int        qte_of_elements;
+    double duration;
+};
 
-    duration = 0;
+static void display_line_with_freq(void *data, int index, void *metadata)
+{
+    log_line_t *line;
+    double     duration;
+
+    line = (log_line_t *)data;
+    duration = ((struct line_metadata *)metadata)->duration;
+    printf("%4d %4d %4.2f/s %s\n",
+           index,
+           line->count,
+           line->count / duration,
+           line->repr);
+}
+
+static void display_line_without_freq(void *data, int index,
+                                      void *metadata)
+{
+    log_line_t *line;
+
+    (void) metadata;
+    line = (log_line_t *)data;
+    printf("%4d %4d %s\n",
+           index,
+           line->count,
+           line->repr);
+}
+
+void                     stdout_update()
+{
+    history_element_t    *oldest_element;
+    history_element_t    *newest_element;
+    struct line_metadata line_metadata;
+    unsigned int         qte_of_elements;
+
+    line_metadata.duration = 0;
     oldest_element = oldest_element_in_history();
     newest_element = newest_element_in_history();
     if (oldest_element != NULL && newest_element != NULL)
-        duration = difftime(newest_element->time, oldest_element->time);
-    i = 0;
+        line_metadata.duration = difftime(newest_element->time,
+                                      oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
-    if (duration > 0)
+    if (line_metadata.duration > 0)
         printf("%d elements in %d seconds (%.2f elements/s)\n",
                qte_of_elements,
-               (unsigned int)duration,
-               qte_of_elements / (double)duration);
+               (unsigned int)line_metadata.duration,
+               qte_of_elements / (double)line_metadata.duration);
     else
         printf("%d elements\n",
                qte_of_elements);
-    for (node = gl_env.top->head;
-         node != NULL && i < gl_env.display_height;
-         node = node->next)
-    {
-        log_entry = (log_line*)node->item;
-        if (duration > 0)
-        {
-            printf("%4d %4d %4.2f/s %s\n",
-                   i + 1,
-                   log_entry->count,
-                   log_entry->count / (double)duration,
-                   log_entry->repr);
-        }
-        else
-        {
-            printf("%4d %4d %s\n",
-                   i + 1,
-                   log_entry->count,
-                   log_entry->repr);
-        }
-        i += 1;
-    }
+    if (line_metadata.duration > 0)
+        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+                           display_line_with_freq, &line_metadata);
+    else
+        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+                           display_line_without_freq, &line_metadata);
 }

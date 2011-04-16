@@ -7,13 +7,14 @@
 
 NAME = logtop
 DSRC = src
-SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/curses.c $(DSRC)/stdout.c
+SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/history.c $(DSRC)/curses.c \
+      $(DSRC)/stdout.c $(DSRC)/libavl/avl.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .
 DEFINE = _GNU_SOURCE
-LIB = -lavl -lncurses #-lefence
-CFLAGS = -fPIC -g3 -O3 -W -Wall -ansi -pedantic -I$(INCLUDE)
+LIB = -lncurses #-lefence
+CFLAGS = -O3 -W -Wall -ansi -pedantic -I$(INCLUDE)
 RM = rm -f
 
 $(NAME):	$(OBJ)
@@ -30,6 +31,7 @@ all:
 		$(CC) -D $(DEFINE) -c $(CFLAGS) $< -o $(<:.c=.o)
 
 clean:
-		$(RM) $(NAME) $(DSRC)/*~ $(DSRC)/#*# $(DSRC)/*.o $(DSRC)/*.core
+		$(RM) $(NAME) $(DSRC)/*~ $(DSRC)/#*# $(DSRC)/*.o $(DSRC)/*.core \
+              $(DSRC)/libavl/*.o
 
 re:		clean all

@@ -29,34 +29,86 @@
 
 #include "logtop.h"
 
-static int    compare_string(const void *element1, const void *element2)
+static int compare_log_lines_string(const void *log_line1,
+                                    const void *log_line2,
+    void *avl_param)
 {
-    return (strcmp(((log_line*)element1)->string,
-                   ((log_line*)element2)->string));
+    (void) avl_param;
+    return (strcmp(((log_line_t*)log_line1)->string,
+                   ((log_line_t*)log_line2)->string));
 }
 
-static int    compare_count(const void *element1, const void *element2)
+static int compare_log_lines_count(const void *log_line1,
+                                   const void *log_line2,
+    void *avl_param)
 {
-    if (((log_line*)element1)->count == ((log_line*)element2)->count)
-    return (long)element1 - (long)element2;
-    return (((log_line*)element2)->count - ((log_line*)element1)->count);
+    (void) avl_param;
+    if (((log_line_t*)log_line1)->count != ((log_line_t*)log_line2)->count)
+    {
+        if (((log_line_t*)log_line2)->count > ((log_line_t*)log_line1)->count)
+            return 1;
+        else
+            return -1;
+    }
+    return compare_log_lines_string(log_line1, log_line2, NULL);
 }
 
-static void    freeitem(void *element)
+static void die()
 {
-    free(((log_line*)element)->string);
-    free(((log_line*)element)->repr);
-    free(element);
+    fputs("Ran out of memory, commit suicide for important tasks to live !",
+          stderr);
+    exit(EXIT_FAILURE);
 }
 
-void    init_data_structures()
+static char *repr(const char *str)
 {
-    gl_env.history = (history_element_t*)calloc(sizeof(history_element_t),
-                                                gl_env.history_size);
+    char *clean;
+    int  i;
+
+    clean = strdup(str);
+    if (clean == NULL)
+      return NULL;
+    for (i = 0; clean[i] != '\0'; ++i)
+        if (clean[i] < ' ' || clean[i] > '~')
+	    clean[i] = '.';
+    return clean;
+}
+
+static log_line_t *create_log_entry(char *string)
+{
+    log_line_t *entry;
+
+    entry = (log_line_t*)malloc(sizeof(*entry));
+    if (entry == NULL)
+        die();
+    entry->count = 0;
+    entry->string = strdup(string);
+    if (entry->string == NULL)
+        die();
+    entry->repr = repr(string);
+    if (entry->repr == NULL)
+        die();
+    avl_insert(gl_env.strings, entry);
+    avl_insert(gl_env.top, entry);
+    return entry;
+}
+
+static void delete_log_entry(log_line_t *log_entry)
+{
+    log_line_t *deleted;
+
+    deleted = (log_line_t *)avl_delete(gl_env.strings, log_entry);
+    free(deleted->string);
+    free(deleted->repr);
+    free(deleted);
+}
+
+void    init_avl()
+{
     gl_env.history_start = 0;
     gl_env.last_update_time = time(NULL);
-    gl_env.strings = avl_alloc_tree(compare_string, freeitem);
-    gl_env.top = avl_alloc_tree(compare_count, NULL);
+    gl_env.strings = avl_create(compare_log_lines_string, NULL, NULL);
+    gl_env.top = avl_create(compare_log_lines_count, NULL, NULL);
     if (gl_env.strings == NULL || gl_env.top == NULL)
     {
         fputs("Not enough memory to create storage", stderr);
@@ -64,57 +116,49 @@ void    init_data_structures()
     }
 }
 
-void die()
+log_line_t *get_log_entry(char *string)
 {
-    fputs("Ran out of memory, commit suicide for important tasks to live !",
-          stderr);
-    exit(EXIT_FAILURE);
-}
-
-log_line     *create_log_entry(char *string)
-{
-    log_line *entry;
-    int      i;
-
-    entry = (log_line*)malloc(sizeof(log_line));
-    if (entry == NULL)
-        die();
-    entry->count = 0;
-    entry->string = strdup(string);
-    if (entry->string == NULL)
-        die();
-    string[strlen(string) - 1] = '\0';
-    for (i = 0; string[i]; ++i)
-	if (string[i] < ' ' || string[i] > '~')
-	    string[i] = '.';
-    entry->repr = strdup(string);
-    if (entry->repr == NULL)
-        die();
-    entry->string_node = avl_insert(gl_env.strings, entry);
-    entry->top_node = avl_insert(gl_env.top, entry);
-    return entry;
-}
-
-log_line       *get_log_entry(char *string)
-{
-    avl_node_t    *node;
-    log_line   search;
+    log_line_t *node;
+    log_line_t search;
 
     search.string = string;
-    node = avl_search(gl_env.strings, &search);
+    node = avl_find(gl_env.strings, &search);
     if (node != NULL)
-        return (log_line*)node->item;
+        return node;
     else
         return create_log_entry(string);
 }
 
-/*
-** The entry count have changed :
-** The only solution to update the tree, is to unlink and reinsert
-** the entry in the tree.
-*/
-void    update_log_entry(log_line *log_entry)
+void increment_log_entry_count(log_line_t *log_entry)
 {
-    avl_unlink_node(gl_env.top, log_entry->top_node);
-    avl_insert_node(gl_env.top, log_entry->top_node);
+    avl_delete(gl_env.top, log_entry);
+    log_entry->count += 1;
+    avl_insert(gl_env.top, log_entry);
+}
+
+void decrement_log_entry_count(log_line_t *log_entry)
+{
+    avl_delete(gl_env.top, log_entry);
+    log_entry->count -= 1;
+    if (log_entry->count != 0)
+        avl_insert(gl_env.top, log_entry);
+    else
+        delete_log_entry(log_entry);
+}
+
+void traverse_log_lines(struct avl_table *tree, unsigned int length,
+              void (*visitor)(void *data, int index, void *user_data),
+              void *user_data)
+{
+    struct avl_traverser trav;
+    void                 *node;
+    unsigned int         last;
+
+    last = length;
+    node = avl_t_first(&trav, tree);
+    while (length-- > 0 && node != NULL)
+    {
+        visitor(node, last - length, user_data);
+        node = avl_t_next(&trav);
+    }
 }

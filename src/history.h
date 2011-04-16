@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Julien Palard.  All rights reserved.
+ * Copyright (c) 2010 Julien Palard.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,38 +23,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __LOGTOP_H__
-#define __LOGTOP_H__
-
-#include <time.h>
+#ifndef __HISTORY__
+#define __HISTORY__
 
 #include "avl.h"
-#include "history.h"
 
-#ifndef STRINGIFY
-#  define __LOGTOP_STRINGIFY(x) #x
-#  define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
-#endif
-
-#define DEFAULT_HISTORY_SIZE 10000
-
-typedef struct        s_env
+typedef struct s_history_element
 {
-    struct avl_table  *strings;
-    struct avl_table  *top;
-    history_element_t *history;
-    unsigned int      history_start;
-    unsigned int      history_size;
-    unsigned int      display_height;
-    time_t            last_update_time;
-}                     env_t;
+    log_line_t *log_entry;
+    time_t     time;
+}              history_element_t;
 
-extern env_t gl_env;
-
-void curses_setup();
-void curses_release();
-void curses_update();
-
-void stdout_update();
+void init_history();
+history_element_t *oldest_element_in_history();
+history_element_t *newest_element_in_history();
+unsigned int qte_of_elements_in_history();
+void update_history(log_line_t *element);
 
 #endif

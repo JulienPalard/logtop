@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Julien Palard.  All rights reserved.
+ * Copyright (c) 2010 Julien Palard.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,38 +23,24 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __LOGTOP_H__
-#define __LOGTOP_H__
+#ifndef __AVL_H__
+#define __AVL_H__
 
-#include <time.h>
+#include "libavl/avl.h"
 
-#include "avl.h"
-#include "history.h"
-
-#ifndef STRINGIFY
-#  define __LOGTOP_STRINGIFY(x) #x
-#  define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
-#endif
-
-#define DEFAULT_HISTORY_SIZE 10000
-
-typedef struct        s_env
+typedef struct   s_log_line
 {
-    struct avl_table  *strings;
-    struct avl_table  *top;
-    history_element_t *history;
-    unsigned int      history_start;
-    unsigned int      history_size;
-    unsigned int      display_height;
-    time_t            last_update_time;
-}                     env_t;
+    char         *string;
+    char         *repr;
+    unsigned int count;
+}                log_line_t;
 
-extern env_t gl_env;
-
-void curses_setup();
-void curses_release();
-void curses_update();
-
-void stdout_update();
+void init_avl();
+log_line_t *get_log_entry(char *);
+void increment_log_entry_count(log_line_t *);
+void decrement_log_entry_count(log_line_t *);
+void traverse_log_lines(struct avl_table *tree, unsigned int length,
+              void (*visitor)(void *data, int index, void *user_data),
+              void *user_data);
 
 #endif
