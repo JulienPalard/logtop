@@ -1,3 +1,126 @@
+commit ed19208fb00582b5ec317996483094dbe5d21945
+Author: Julien <github@mandark.fr>
+Date:   Sat Apr 16 12:30:42 2011 +0200
+
+    FIX: If a line does not end with \n (the last?) it was reported as an empty string.
+    NEW: Compatibility with lines ending with CR+LF, LF+CR, LF, or CR
+         (and any other combinations !)
+
+commit 0a613e0b38ae2444ba16db7ad9e304138c245d01
+Author: Julien <github@mandark.fr>
+Date:   Sat Apr 16 12:17:22 2011 +0200
+
+    Some corretion to the manpage
+
+commit fd4f01ce719327bf6a408e3303fb4abf2956623d
+Merge: 7dd641b e1297af
+Author: Julien <github@mandark.fr>
+Date:   Sat Apr 16 12:07:46 2011 +0200
+
+    Merge branch 'master' of github.com:JulienPalard/logtop
+
+commit 7dd641b0f8c55a4d6066b7cbf86ba058fae1cc23
+Author: Julien <github@mandark.fr>
+Date:   Sat Apr 16 12:06:25 2011 +0200
+
+    Rewriting the README to remove livavl dependencies
+
+commit e1297afe02efbf283b7097a2b9be18e95ae0c211
+Author: Julien Palard <julien@palard.fr>
+Date:   Wed Mar 16 22:47:48 2011 +0100
+
+    FIX: Forgotten .o in libavl folder while make clean
+
+commit 48ba928d91c57f08469540d7a9c11784eb8d8f6d
+Author: Julien Palard <julien@palard.fr>
+Date:   Wed Mar 16 08:51:45 2011 +0100
+
+    Fixed a bug that makes some entry to appear more than once in the result.
+
+commit b80e8ac8a51e3fed021b63e7e8061d2a0650752c
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 23:07:01 2011 +0100
+
+    Fixing display bug
+
+commit a36398cc512cd4e83be330ddab98bdc36062f1ab
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 23:06:24 2011 +0100
+
+    Removing a useless strlen
+
+commit bb88531f819a3d32cfe8ff09228f2e3bf023f1be
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 23:01:58 2011 +0100
+
+    traverse_log_lines can yield NULL, so we have to check it
+
+commit d578251e91d8ef0cc863f7c9add9f36b9d7eddd2
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 22:51:07 2011 +0100
+
+    Simple refactoring of writers
+
+commit 99130d175dadbd46d7759c0a8e899a44e0ec9f37
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 20:41:29 2011 +0100
+
+    Removing one line in the stdout output module to keep the first line of result, previously dropped due to the appearing shell line of the user
+
+commit b4e7ce5133d5537f38ce1824a33475c1a7a2476a
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 20:39:29 2011 +0100
+
+    Removing the unused UNUSED define and protecting STRINGIFY
+
+commit 1e19ee9d10ec2c621de087c257e1f93513fa4344
+Author: Julien Palard <julien@palard.fr>
+Date:   Tue Mar 15 20:35:26 2011 +0100
+
+    Dropping dependency to Debian's libavl in favor of the pfaff's one, statically build
+
+commit a68ce57035b92f02086c62e7b7f5d4b008f2f2a9
+Author: Julien <github@mandark.fr>
+Date:   Sun Jan 16 20:32:26 2011 +0100
+
+    Adding Debian changelog
+
+commit 3baa3447757da760a10eb417f58a6c92ed239c65
+Author: mandark <mandark@epi.(none)>
+Date:   Tue Dec 28 10:15:17 2010 +0100
+
+    Refactorig for readeability
+
+commit b597c950277555d15191ace04b9c1ba252f35c8f
+Author: mandark <mandark@epi.(none)>
+Date:   Tue Dec 28 09:46:32 2010 +0100
+
+    Moving history structure to history.h
+
+commit 1a7dca7680a8bc52b0e4d2a8ecea4f85b995bd29
+Author: mandark <mandark@epi.(none)>
+Date:   Tue Dec 28 09:42:26 2010 +0100
+
+    Updating licences
+
+commit 05fb3773ced37f5e3328d5ecae752e01f5c0fd69
+Author: mandark <mandark@epi.(none)>
+Date:   Tue Dec 28 09:20:37 2010 +0100
+
+    Refactoring for readeability
+
+commit 4d4e20ddd51a301b809fb70c9e27d5a9767461d7
+Author: mandark <mandark@epi.(none)>
+Date:   Tue Dec 28 08:51:29 2010 +0100
+
+    Splitting history managment in history.c
+
+commit afbee48ee250e83bdbcebae0ff929c0e02d56938
+Author: Julien <github@mandark.fr>
+Date:   Mon Dec 27 08:41:17 2010 +0100
+
+    Fixing manpage
+
 commit 7d02ea927e14beeb32322edfb939c6a616c03013
 Author: mandark <mandark@epi.(none)>
 Date:   Sun Dec 12 20:57:50 2010 +0100

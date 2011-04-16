@@ -54,7 +54,12 @@ void        run()
     size = 0;
     while ((str_length = getline(&string, &size, stdin)) != -1)
     {
-        string[str_length - 1] = '\0';
+        while (str_length > 0 && (string[str_length - 1] == '\n'
+                                  || string[str_length - 1] == '\r'))
+        {
+            string[str_length - 1] = '\0';
+            str_length -= 1;
+        }
         got_a_new_string(string);
     }
     if (string != NULL)
