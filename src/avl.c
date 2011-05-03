@@ -26,17 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
 #include "logtop.h"
-
-static int compare_log_lines_string(const void *log_line1,
-                                    const void *log_line2,
-    void *avl_param)
-{
-    (void) avl_param;
-    return (strcmp(((log_line_t*)log_line1)->string,
-                   ((log_line_t*)log_line2)->string));
-}
 
 static int compare_log_lines_count(const void *log_line1,
                                    const void *log_line2,
@@ -50,7 +40,9 @@ static int compare_log_lines_count(const void *log_line1,
         else
             return -1;
     }
-    return compare_log_lines_string(log_line1, log_line2, NULL);
+    return (strcmp(((log_line_t*)log_line1)->string,
+                   ((log_line_t*)log_line2)->string));
+
 }
 
 static void die()
@@ -88,28 +80,27 @@ static log_line_t *create_log_entry(char *string)
     entry->repr = repr(string);
     if (entry->repr == NULL)
         die();
-    avl_insert(gl_env.strings, entry);
+    HASH_ADD_KEYPTR(hh, gl_env.strings, entry->string, strlen(entry->string),
+                    entry);
     avl_insert(gl_env.top, entry);
     return entry;
 }
 
 static void delete_log_entry(log_line_t *log_entry)
 {
-    log_line_t *deleted;
-
-    deleted = (log_line_t *)avl_delete(gl_env.strings, log_entry);
-    free(deleted->string);
-    free(deleted->repr);
-    free(deleted);
+    HASH_DEL(gl_env.strings, log_entry);
+    free(log_entry->string);
+    free(log_entry->repr);
+    free(log_entry);
 }
 
 void    init_avl()
 {
     gl_env.history_start = 0;
     gl_env.last_update_time = time(NULL);
-    gl_env.strings = avl_create(compare_log_lines_string, NULL, NULL);
+    gl_env.strings = NULL;
     gl_env.top = avl_create(compare_log_lines_count, NULL, NULL);
-    if (gl_env.strings == NULL || gl_env.top == NULL)
+    if (gl_env.top == NULL)
     {
         fputs("Not enough memory to create storage", stderr);
         exit(EXIT_FAILURE);
@@ -119,10 +110,8 @@ void    init_avl()
 log_line_t *get_log_entry(char *string)
 {
     log_line_t *node;
-    log_line_t search;
 
-    search.string = string;
-    node = avl_find(gl_env.strings, &search);
+    HASH_FIND_STR(gl_env.strings, string, node);
     if (node != NULL)
         return node;
     else

@@ -27,13 +27,15 @@
 #define __AVL_H__
 
 #include "libavl/avl.h"
+#include <uthash.h>
 
-typedef struct   s_log_line
+typedef struct     s_log_line
 {
-    char         *string;
-    char         *repr;
-    unsigned int count;
-}                log_line_t;
+    char           *string;
+    char           *repr;
+    unsigned int   count;
+    UT_hash_handle hh;
+}                  log_line_t;
 
 void init_avl();
 log_line_t *get_log_entry(char *);

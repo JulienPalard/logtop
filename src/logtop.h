@@ -40,7 +40,7 @@
 
 typedef struct        s_env
 {
-    struct avl_table  *strings;
+    log_line_t        *strings;
     struct avl_table  *top;
     history_element_t *history;
     unsigned int      history_start;
