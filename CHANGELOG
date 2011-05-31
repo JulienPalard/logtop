@@ -1,4 +1,10 @@
-commit 4fda649395c159db123e49efb3be69fcf5d2012e
+commit f8b71ad2beefbc1d8a969af504c0432f8b58a7db
+Author: Julien <github@mandark.fr>
+Date:   Tue May 31 18:31:07 2011 +0200
+
+    Addin an 'About libavl' in the README file
+
+commit 9173816f68403eed3e736c5f7629fcfb39da08f1
 Author: Julien <github@mandark.fr>
 Date:   Tue May 31 18:24:29 2011 +0200
 

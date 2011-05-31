@@ -41,5 +41,12 @@ Development :
   so I can fetch by string or fetch ordered by frequency to display the
   top-strings.
 
+About libavl:
+  The libavl used here is the Ben Pfaff's one, statically build with logtop, as
+  Ben want it to be (see INSTALL file and here :
+  http://lists.debian.org/debian-devel/2001/07/msg01303.html)
+  So this libavl is NOT packaged as a library for Debian, the libavl you'll
+  found in Debian repositories is the Wessel Dankers's one.
+
 TODO :
   Better integration with curses (resize...)
