@@ -7,7 +7,7 @@ julien at palard in fr
 
 Compile :
     You will need :
-    $ aptitude install libncurses5-dev
+    $ aptitude install libncurses5-dev uthash-dev
 
 Run :
     You will need :

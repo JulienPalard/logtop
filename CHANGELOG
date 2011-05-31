@@ -1,4 +1,10 @@
-commit f8b71ad2beefbc1d8a969af504c0432f8b58a7db
+commit 8049a047c00ecce2d0883364d01f7900d46dadbe
+Author: Julien <github@mandark.fr>
+Date:   Tue May 31 18:43:43 2011 +0200
+
+    Adding a missing build dependency in the README file (uthash-dev)
+
+commit ed1e9befb8414d1c5fb4db77368b4bec85c3eaa9
 Author: Julien <github@mandark.fr>
 Date:   Tue May 31 18:31:07 2011 +0200
 
