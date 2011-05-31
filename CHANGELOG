@@ -1,4 +1,18 @@
-commit ed19208fb00582b5ec317996483094dbe5d21945
+commit 4fda649395c159db123e49efb3be69fcf5d2012e
+Author: Julien <github@mandark.fr>
+Date:   Tue May 31 18:24:29 2011 +0200
+
+    Updating README to reflect the actual implementation, and fixing a typo
+
+commit 14ec7f22988ebbd17a8a067dad1d97725bdeb753
+Author: Julien <github@mandark.fr>
+Date:   Tue May 3 23:47:50 2011 +0200
+
+    Replacing strings storage, from an AVL tree to an hashtable,
+    little gain in performance (~20%)
+    But keeping an AVL tree for the rank (as it needs to be sorted)
+
+commit 88c217e50fa8593afa57fa92c6501926735dc53a
 Author: Julien <github@mandark.fr>
 Date:   Sat Apr 16 12:30:42 2011 +0200
 

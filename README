@@ -10,7 +10,7 @@ Compile :
     $ aptitude install libncurses5-dev
 
 Run :
-    Wou will need :
+    You will need :
     $ aptitude install libncurses5
 
 Usage :
@@ -37,8 +37,9 @@ Compile (Dependencies) :
     Version: 5.7+20100313-1
 
 Development :
-  I use AVL trees to store strings AND counts, so I can fetch by string AND
-  fetch ordered to display the top-strings.
+  I use a hashtable to store strings and an AVL tree to store frequencies,
+  so I can fetch by string or fetch ordered by frequency to display the
+  top-strings.
 
 TODO :
   Better integration with curses (resize...)
