@@ -103,9 +103,7 @@ static void usage_and_exit(int exit_code)
             "                           Defaults to : "
             STRINGIFY(DEFAULT_HISTORY_SIZE) "\n"
             "    -q, --quiet            Quiet, only display a top 10 at exit.\n"
-            "    -l, --line-by-line=NUM Do not use curses,"
-            " do not print a top 10 at exit.\n"
-            "                           Display a line by line report\n"
+            "    -l, --line-by-line=NUM Print result line by line\n"
             "                           in a machine friendly format,\n"
             "                           NUM: quantity of result by line.\n");
     fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
@@ -122,7 +120,7 @@ static void usage_and_exit(int exit_code)
 
 static void version_and_exit(void)
 {
-    fprintf(stdout, "logtop v0.12\n");
+    fprintf(stdout, "logtop v0.2\n");
     exit(EXIT_SUCCESS);
 }
 
@@ -179,14 +177,24 @@ static void parse_args(int ac, char **av)
         gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
 
-static void on_sigint(int sig)
+static void at_exit(void)
 {
     if (!gl_env.quiet && !gl_env.line_by_line)
+    {
         curses_release();
-    setup_sighandler(SIGINT, 0, NULL);
-    if (!gl_env.line_by_line)
+        puts("Curses release");
+    }
+    if (gl_env.line_by_line)
+        stdout_update(gl_env.line_by_line, 1);
+    else
         stdout_update(10, 0);
     fflush(NULL);
+}
+
+static void on_sigint(int sig)
+{
+    setup_sighandler(SIGINT, 0, NULL);
+    at_exit();
     kill(getpid(), sig);
 }
 
@@ -199,9 +207,6 @@ int main(int ac, char **av)
     if (!gl_env.quiet && !gl_env.line_by_line)
         curses_setup();
     run();
-    if (!gl_env.quiet && !gl_env.line_by_line)
-        curses_release();
-    if (!gl_env.line_by_line)
-        stdout_update(10, 0);
+    at_exit();
     return EXIT_SUCCESS;
 }

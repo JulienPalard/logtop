@@ -9,10 +9,9 @@ logtop \- Realtime log line rate analyser
 .SH "SYNOPSIS"
 .B logtop
 .RI [ OPTIONS ]
-.RI [ FILE ]
 .SH "DESCRIPTION"
- \fBlogtop\fP is a System Administrator tool to analyze line rate taking log
- file as input. It reads on stdin and print a constantly updated result
+ \fBlogtop\fP is a System Administrator tool analyzing line rate on stdin.
+ It reads on stdin and print a constantly updated result
  displaying, in columns:
  Line number, count, frequency, and the actual line.
 
@@ -23,7 +22,22 @@ logtop \- Realtime log line rate analyser
 .SH "OPTIONS"
 .TP
 .B \-s, \-\-size=K
-Set \fBlogtop\fP to work with the maximum of K lines instead of 10000
+Only keep K lines in memory, instead of 10000.
+.TP
+.B \-q, \-\-quiet
+Do not display a live view of the data, only display a top at exit.
+.TP
+.B \-l, \-\-line-by-line=K
+Print result line by line, in a machine friendly format, K is the
+number of result to print per line.
+
+  Line by line format is : [%d %f %s\\t]*\\n
+    %d : Number of occurences
+    %f : Frequency of apparition
+    %s : String (Control chars replaced by dots.
+.TP
+.B \-i, \-\-interval=K
+Interval between graphical updates, in seconds. Defaults to 1.
 .TP
 .B \-h, \-\-help
 Show summary of options.
@@ -42,13 +56,14 @@ Realtime hit / miss ratio on some caching software log file.
 .PP
 \fBtail \-f access.log | cut \-d' ' \-f1 | logtop \-s 10000\fR
 .PP
-Realtime most querying IPs on your server, as long as log lines in access.log starts with the client IP.
+Realtime most querying IPs on your server, as long as log lines in access.log
+starts with the client IP.
 .PP
 \fBtail \-f access.log | cut \-d' ' \-f7 | logtop \-s 10000\fR
 .PP
 Realtime most requested web pages in a NCSA like log file.
 .PP
-\fBcat auth.log | grep \-v "CRON" | grep \-o ": .*" | logtop \-s 100000\fR
+\fBcat auth.log | grep \-v "CRON" | grep \-o ": .*" | logtop \-q \-s 100000\fR
 .PP
 Display a one\-shot simple analyse of your auth.log.
 .SH "SEE ALSO"

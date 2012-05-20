@@ -5,36 +5,28 @@ This project was initiated on 2010-06-29 by Palard Julien
 See http://julien.palard.fr or ask me questions at :
 julien at palard in fr
 
-Compile :
+Compile dependencies :
     You will need :
+    Package: libncurses5-dev
+      Version: 5.7+20100313-1
     $ aptitude install libncurses5-dev uthash-dev
+
+    Then, to compile just type :
+    $ make
 
 Run :
     You will need :
     $ aptitude install libncurses5
+    $ ./logtop
 
 Usage :
   logtop displays real-time count of strings recieved in standard input.
-  I's useful for some cases, like :
-  tail -f /var/log/apache2/access.log \
-    | sed -u -r 's/^([^ ]+) ([^ ]+) ([^ ]+) \[([^]]+)] "([^ ]+) ([^"]+) HTTP\/([^"]+)" ([^ ]+) ([^ ]+) "([^"]+)" "([^"]+)"$/\6/g' \
-    | logtop
-  to show the top pages requested on your apache
-  I'd put parenthesis everywhere to allow you to switch the selection :
-   1: ip
-   2: date
-   5: method
-   6: url
-   7: version
-   8: status
-   9: length
-   10: referer
-   11: useragent
-)
+  I's useful for some cases, like getting the IP flooding your server :
+  $ tail -f /var/log/apache2/access.log | cut -d' ' -f1 | logtop
 
-Compile (Dependencies) :
-  Package: libncurses5-dev
-    Version: 5.7+20100313-1
+  Or the top buzzing article of your blog :
+  $ tail -f /var/log/apache2/access.log | cut -d' ' -f7 | grep article | logtop
+
 
 Development :
   I use a hashtable to store strings and an AVL tree to store frequencies,
@@ -47,6 +39,3 @@ About libavl:
   http://lists.debian.org/debian-devel/2001/07/msg01303.html)
   So this libavl is NOT packaged as a library for Debian, the libavl you'll
   found in Debian repositories is the Wessel Dankers's one.
-
-TODO :
-  Better integration with curses (resize...)
