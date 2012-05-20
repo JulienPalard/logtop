@@ -61,16 +61,16 @@ static void got_a_new_string(char *string)
     element = get_log_entry(string);
     increment_log_entry_count(element);
     update_history(element);
-    if (!gl_env.with_curses && !gl_env.line_by_line)
+    if (gl_env.quiet)
         return ;
     current_time = time(NULL);
     if (current_time < gl_env.last_update_time + gl_env.interval)
         return ;
     gl_env.last_update_time = current_time;
-    if (gl_env.with_curses)
-        curses_update();
     if (gl_env.line_by_line)
         stdout_update(gl_env.line_by_line, 1);
+    else
+        curses_update();
 }
 
 static void run(void)
@@ -103,12 +103,14 @@ static void usage_and_exit(int exit_code)
             "                           Defaults to : "
             STRINGIFY(DEFAULT_HISTORY_SIZE) "\n"
             "    -q, --quiet            Quiet, only display a top 10 at exit.\n"
-            "    -l, --line-by-line=NUM Do not use curses, display line by line\n"
+            "    -l, --line-by-line=NUM Do not use curses,"
+            " do not print a top 10 at exit.\n"
+            "                           Display a line by line report\n"
             "                           in a machine friendly format,\n"
             "                           NUM: quantity of result by line.\n");
     fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
             "    -i, --interval=NUM     Interval between graphical updates,\n"
-            "                           in seconds. Defaults to 1s.\n"
+            "                           in seconds. Defaults to 1.\n"
             "\n"
             "  Line by line format is : [%%d %%f %%s\\t]*\\n\n"
             "    %%d : Number of occurences\n"
@@ -129,7 +131,7 @@ static void parse_args(int ac, char **av)
     int c;
 
     gl_env.history_size = 0;
-    gl_env.with_curses = 1;
+    gl_env.quiet = 0;
     gl_env.last_update_time = 0;
     gl_env.line_by_line = 0;
     gl_env.interval = 1;
@@ -155,7 +157,7 @@ static void parse_args(int ac, char **av)
                 gl_env.line_by_line = atoi(optarg);
                 break;
             case 'q':
-                gl_env.with_curses = 0;
+                gl_env.quiet = 1;
                 break;
             case 's':
                 gl_env.history_size = atoi(optarg);
@@ -171,15 +173,13 @@ static void parse_args(int ac, char **av)
                 usage_and_exit(EXIT_FAILURE);
         }
     }
-    if (gl_env.line_by_line)
-        gl_env.with_curses = 0;
     if (gl_env.history_size == 0)
         gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
 
 static void on_sigint(int sig)
 {
-    if (gl_env.with_curses)
+    if (!gl_env.quiet && !gl_env.line_by_line)
         curses_release();
     setup_sighandler(SIGINT, 0, NULL);
     if (!gl_env.line_by_line)
@@ -194,10 +194,10 @@ int main(int ac, char **av)
     setup_sighandler(SIGINT, 0, on_sigint);
     init_history();
     init_avl();
-    if (gl_env.with_curses)
+    if (!gl_env.quiet && !gl_env.line_by_line)
         curses_setup();
     run();
-    if (gl_env.with_curses)
+    if (!gl_env.quiet && !gl_env.line_by_line)
         curses_release();
     if (!gl_env.line_by_line)
         stdout_update(10, 0);

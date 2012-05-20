@@ -41,7 +41,7 @@
 typedef struct        s_env
 {
     log_line_t        *strings;
-    int               with_curses;
+    int               quiet;
     int               line_by_line;
     struct avl_table  *top;
     history_element_t *history;
