@@ -41,6 +41,7 @@
 typedef struct        s_env
 {
     log_line_t        *strings;
+    int               with_curses;
     struct avl_table  *top;
     history_element_t *history;
     unsigned int      history_start;
@@ -56,5 +57,6 @@ void curses_setup(void);
 void curses_release(void);
 void curses_update(void);
 void stdout_update(int nb_lines);
+void setup_sighandler(int signum, int flags, void (*act)(int));
 
 #endif

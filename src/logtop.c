@@ -28,11 +28,29 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <signal.h>
 #include "logtop.h"
 #include "history.h"
 #include "avl.h"
 
 env_t gl_env;
+
+/**
+ * Basic sig handling using sigaction.
+ * Reset action to SIG_DFL if act is NULL.
+ */
+void setup_sighandler(int signum, int flags, void (*act)(int))
+{
+    struct sigaction sa;
+
+    sigemptyset(&sa.sa_mask);
+    if (act != NULL)
+        sa.sa_handler = act;
+    else
+        sa.sa_handler = SIG_DFL;
+    sa.sa_flags = flags;
+    sigaction(signum, &sa, NULL);
+}
 
 static void got_a_new_string(char *string)
 {
@@ -42,6 +60,8 @@ static void got_a_new_string(char *string)
     element = get_log_entry(string);
     increment_log_entry_count(element);
     update_history(element);
+    if (!gl_env.with_curses)
+        return ;
     current_time = time(NULL);
     if (current_time == gl_env.last_update_time)
         return ;
@@ -74,9 +94,10 @@ static void run(void)
 static void usage_and_exit(char* program_name)
 {
     fprintf(stderr,
-            "Usage: tail something | %s [-s history_size]\n"
-            "    history_size: Number of log line to keep in memory\n"
-            "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE)
+            "Usage: tail something | %s [-s history_size] [-q]\n"
+            "    -s: Number of log line to keep in memory\n"
+            "        Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE)
+            "    -q: Quiet, only display a top 10 at exit."
             " lines.\n",
             program_name);
     exit(EXIT_FAILURE);
@@ -93,10 +114,14 @@ static void parse_args(int ac, char **av)
     int opt;
 
     gl_env.history_size = 0;
-    while ((opt = getopt(ac, av, "hvs:")) != -1)
+    gl_env.with_curses = 1;
+    while ((opt = getopt(ac, av, "hvs:q")) != -1)
     {
         switch (opt)
         {
+            case 'q':
+                gl_env.with_curses = 0;
+                break;
             case 's':
                 gl_env.history_size = atoi(optarg);
                 break;
@@ -111,14 +136,27 @@ static void parse_args(int ac, char **av)
         gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
 
+static void on_sigint(int sig)
+{
+    if (gl_env.with_curses)
+        curses_release();
+    setup_sighandler(SIGINT, 0, NULL);
+    stdout_update(10);
+    fflush(NULL);
+    kill(getpid(), sig);
+}
+
 int main(int ac, char **av)
 {
     parse_args(ac, av);
+    setup_sighandler(SIGINT, 0, on_sigint);
     init_history();
     init_avl();
-    curses_setup();
+    if (gl_env.with_curses)
+        curses_setup();
     run();
-    curses_release();
+    if (gl_env.with_curses)
+        curses_release();
     stdout_update(10);
     return EXIT_SUCCESS;
 }

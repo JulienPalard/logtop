@@ -34,32 +34,6 @@
 
 static WINDOW *window;
 
-/**
- * Basic sig handling using sigaction.
- * Reset action to SIG_DFL if act is NULL.
- */
-static void setup_sighandler(int signum, int flags, void (*act)(int))
-{
-    struct sigaction sa;
-
-    sigemptyset(&sa.sa_mask);
-    if (act != NULL)
-        sa.sa_handler = act;
-    else
-        sa.sa_handler = SIG_DFL;
-    sa.sa_flags = flags;
-    sigaction(signum, &sa, NULL);
-}
-
-static void curses_on_sigint(int sig)
-{
-    curses_release();
-    setup_sighandler(SIGINT, 0, NULL);
-    stdout_update(10);
-    fflush(NULL);
-    kill(getpid(), sig);
-}
-
 static void curses_update_winsize(void)
 {
     struct winsize ws;
@@ -89,7 +63,6 @@ static void curses_on_sigwinch(int sig)
 void curses_setup()
 {
     curses_update_winsize();
-    setup_sighandler(SIGINT, 0, curses_on_sigint);
     setup_sighandler(SIGWINCH, SA_RESTART, curses_on_sigwinch);
     initscr();
     window = newwin(gl_env.display_height, gl_env.display_width, 0, 0);
