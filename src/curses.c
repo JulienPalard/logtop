@@ -26,8 +26,36 @@
 #include <ncurses.h>
 #include <curses.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 #include "logtop.h"
 #include "history.h"
+
+/**
+ * Basic sig handling using sigaction.
+ * Reset action to SIG_DFL if act is NULL.
+ */
+static void setup_sighandler(int signum, void (*act)(int))
+{
+    struct sigaction sa;
+
+    sigemptyset(&sa.sa_mask);
+    if (act != NULL)
+        sa.sa_handler = act;
+    else
+        sa.sa_handler = SIG_DFL;
+    sa.sa_flags = 0;
+    sigaction(signum, &sa, NULL);
+}
+
+static void curses_on_sigint(int sig)
+{
+    curses_release();
+    setup_sighandler(SIGINT, NULL);
+    fflush(NULL);
+    kill(getpid(), sig);
+}
 
 void               curses_setup()
 {
@@ -37,8 +65,8 @@ void               curses_setup()
         gl_env.display_height = 24;
     else
         gl_env.display_height = ws.ws_row;
+    setup_sighandler(SIGINT, curses_on_sigint);
     initscr();
-    curs_set(0);
 }
 
 void    curses_release()
