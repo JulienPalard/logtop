@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
+#include <getopt.h>
 #include "logtop.h"
 #include "history.h"
 #include "avl.h"
@@ -60,13 +61,16 @@ static void got_a_new_string(char *string)
     element = get_log_entry(string);
     increment_log_entry_count(element);
     update_history(element);
-    if (!gl_env.with_curses)
+    if (!gl_env.with_curses && !gl_env.line_by_line)
         return ;
     current_time = time(NULL);
-    if (current_time == gl_env.last_update_time)
+    if (current_time < gl_env.last_update_time + gl_env.interval)
         return ;
     gl_env.last_update_time = current_time;
-    curses_update();
+    if (gl_env.with_curses)
+        curses_update();
+    if (gl_env.line_by_line)
+        stdout_update(gl_env.line_by_line, 1);
 }
 
 static void run(void)
@@ -91,47 +95,84 @@ static void run(void)
         free(string);
 }
 
-static void usage_and_exit(char* program_name)
+static void usage_and_exit(int exit_code)
 {
-    fprintf(stderr,
-            "Usage: tail something | %s [-s history_size] [-q]\n"
-            "    -s: Number of log line to keep in memory\n"
-            "        Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE)
-            "    -q: Quiet, only display a top 10 at exit."
-            " lines.\n",
-            program_name);
-    exit(EXIT_FAILURE);
+    fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
+            "Usage: tail something | logtop [OPTIONS]\n"
+            "    -s, --size=NUM         Number of log line to keep in memory\n"
+            "                           Defaults to : "
+            STRINGIFY(DEFAULT_HISTORY_SIZE) "\n"
+            "    -q, --quiet            Quiet, only display a top 10 at exit.\n"
+            "    -l, --line-by-line=NUM Do not use curses, display line by line\n"
+            "                           in a machine friendly format,\n"
+            "                           NUM: quantity of result by line.\n");
+    fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
+            "    -i, --interval=NUM     Interval between graphical updates,\n"
+            "                           in seconds. Defaults to 1s.\n"
+            "\n"
+            "  Line by line format is : [%%d %%f %%s\\t]*\\n\n"
+            "    %%d : Number of occurences\n"
+            "    %%f : Frequency of apparition\n"
+            "    %%s : String (Control chars replaced by dots.\n"
+            "\n");
+    exit(exit_code);
 }
 
-static void version_and_exit(char* program_name)
+static void version_and_exit(void)
 {
-    fprintf(stderr, "%s v0.11\n", program_name);
-    exit(EXIT_FAILURE);
+    fprintf(stdout, "logtop v0.12\n");
+    exit(EXIT_SUCCESS);
 }
 
 static void parse_args(int ac, char **av)
 {
-    int opt;
+    int c;
 
     gl_env.history_size = 0;
     gl_env.with_curses = 1;
-    while ((opt = getopt(ac, av, "hvs:q")) != -1)
+    gl_env.last_update_time = 0;
+    gl_env.line_by_line = 0;
+    gl_env.interval = 1;
+    while (1)
     {
-        switch (opt)
+        int option_index = 0;
+        static struct option long_options[] = {
+            {"size", 1, 0, 's'},
+            {"quiet", 0, 0, 'q'},
+            {"help", 0, 0, 'h'},
+            {"version", 0, 0, 'v'},
+            {"line-by-line", 1, 0, 'l'},
+            {"interval", 1, 0, 'i'},
+            {0, 0, 0, 0}
+        };
+        c = getopt_long(ac, av, "qhvl:s:i:",
+                        long_options, &option_index);
+        if (c == -1)
+            break;
+        switch (c)
         {
+            case 'l':
+                gl_env.line_by_line = atoi(optarg);
+                break;
             case 'q':
                 gl_env.with_curses = 0;
                 break;
             case 's':
                 gl_env.history_size = atoi(optarg);
                 break;
-            case 'v':
-                version_and_exit(av[0]);
+            case 'i':
+                gl_env.interval = atoi(optarg);
                 break;
+            case 'v':
+                version_and_exit();
+            case 'h':
+                usage_and_exit(EXIT_SUCCESS);
             default:
-                usage_and_exit(av[0]);
+                usage_and_exit(EXIT_FAILURE);
         }
     }
+    if (gl_env.line_by_line)
+        gl_env.with_curses = 0;
     if (gl_env.history_size == 0)
         gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
@@ -141,7 +182,8 @@ static void on_sigint(int sig)
     if (gl_env.with_curses)
         curses_release();
     setup_sighandler(SIGINT, 0, NULL);
-    stdout_update(10);
+    if (!gl_env.line_by_line)
+        stdout_update(10, 0);
     fflush(NULL);
     kill(getpid(), sig);
 }
@@ -157,6 +199,7 @@ int main(int ac, char **av)
     run();
     if (gl_env.with_curses)
         curses_release();
-    stdout_update(10);
+    if (!gl_env.line_by_line)
+        stdout_update(10, 0);
     return EXIT_SUCCESS;
 }

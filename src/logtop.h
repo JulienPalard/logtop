@@ -42,6 +42,7 @@ typedef struct        s_env
 {
     log_line_t        *strings;
     int               with_curses;
+    int               line_by_line;
     struct avl_table  *top;
     history_element_t *history;
     unsigned int      history_start;
@@ -49,6 +50,7 @@ typedef struct        s_env
     unsigned int      display_width;
     unsigned int      display_height;
     time_t            last_update_time;
+    time_t            interval;
 }                     env_t;
 
 extern env_t gl_env;
@@ -56,7 +58,7 @@ extern env_t gl_env;
 void curses_setup(void);
 void curses_release(void);
 void curses_update(void);
-void stdout_update(int nb_lines);
+void stdout_update(int nb_lines, int line_by_line);
 void setup_sighandler(int signum, int flags, void (*act)(int));
 
 #endif

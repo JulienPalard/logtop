@@ -32,6 +32,8 @@ struct line_metadata
     double duration;
 };
 
+typedef void (*result_printer)(void *data, int index, void *metadata);
+
 static void display_line_with_freq(void *data, int index, void *metadata)
 {
     log_line_t *line;
@@ -59,7 +61,36 @@ static void display_line_without_freq(void *data, int index,
            line->repr);
 }
 
-void stdout_update(int nb_lines)
+static void display_result_with_freq(void *data, int index, void *metadata)
+{
+    log_line_t *line;
+    double     duration;
+
+    (void) index;
+    line = (log_line_t *)data;
+    duration = ((struct line_metadata *)metadata)->duration;
+    printf("%d %.2f %s\t",
+           line->count, line->count / duration, line->repr);
+}
+
+static void display_result_without_freq(void *data, int index,
+                                        void *metadata)
+{
+    log_line_t *line;
+
+    (void) index;
+    (void) metadata;
+    line = (log_line_t *)data;
+    printf("{%d, 0, %s}", line->count, line->repr);
+}
+
+static const result_printer printers[2][2] = {{display_line_without_freq,
+                                               display_line_with_freq},
+                                              {display_result_without_freq,
+                                               display_result_with_freq}};
+
+
+void stdout_update(int nb_results, int line_by_line)
 {
     history_element_t    *oldest_element;
     history_element_t    *newest_element;
@@ -73,18 +104,20 @@ void stdout_update(int nb_lines)
         line_metadata.duration = difftime(newest_element->time,
                                           oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
-    if (line_metadata.duration > 0)
-        printf("%d elements in %d seconds (%.2f elements/s)\n",
-               qte_of_elements,
-               (unsigned int)line_metadata.duration,
-               qte_of_elements / (double)line_metadata.duration);
-    else
-        printf("%d elements\n",
-               qte_of_elements);
-    if (line_metadata.duration > 0)
-        traverse_log_lines(gl_env.top, nb_lines,
-                           display_line_with_freq, &line_metadata);
-    else
-        traverse_log_lines(gl_env.top, nb_lines,
-                           display_line_without_freq, &line_metadata);
+    if (!line_by_line)
+    {
+        if (line_metadata.duration > 0)
+            printf("%d elements in %d seconds (%.2f elements/s)\n",
+                   qte_of_elements,
+                   (unsigned int)line_metadata.duration,
+                   qte_of_elements / (double)line_metadata.duration);
+        else
+            printf("%d elements\n",
+                   qte_of_elements);
+    }
+    traverse_log_lines(gl_env.top, nb_results,
+                       printers[line_by_line ? 1 : 0][line_metadata.duration > 0],
+                       &line_metadata);
+    if (line_by_line)
+        printf("\n");
 }
