@@ -173,6 +173,8 @@ static void parse_args(int ac, char **av)
                 usage_and_exit(EXIT_FAILURE);
         }
     }
+    if (isatty(fileno(stdin)))
+        usage_and_exit(EXIT_FAILURE);
     if (gl_env.history_size == 0)
         gl_env.history_size = DEFAULT_HISTORY_SIZE;
 }
