@@ -59,7 +59,7 @@ static void display_line_without_freq(void *data, int index,
            line->repr);
 }
 
-void                     stdout_update(int nb_lines)
+void stdout_update(int nb_lines)
 {
     history_element_t    *oldest_element;
     history_element_t    *newest_element;
@@ -71,7 +71,7 @@ void                     stdout_update(int nb_lines)
     newest_element = newest_element_in_history();
     if (oldest_element != NULL && newest_element != NULL)
         line_metadata.duration = difftime(newest_element->time,
-                                      oldest_element->time);
+                                          oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
     if (line_metadata.duration > 0)
         printf("%d elements in %d seconds (%.2f elements/s)\n",

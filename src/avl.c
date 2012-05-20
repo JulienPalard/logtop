@@ -30,7 +30,7 @@
 
 static int compare_log_lines_count(const void *log_line1,
                                    const void *log_line2,
-    void *avl_param)
+                                   void *avl_param)
 {
     (void) avl_param;
     if (((log_line_t*)log_line1)->count != ((log_line_t*)log_line2)->count)
@@ -45,7 +45,7 @@ static int compare_log_lines_count(const void *log_line1,
 
 }
 
-static void die()
+static void die(void)
 {
     fputs("Ran out of memory, commit suicide for important tasks to live !",
           stderr);
@@ -59,10 +59,10 @@ static char *repr(const char *str)
 
     clean = strdup(str);
     if (clean == NULL)
-      return NULL;
+        return NULL;
     for (i = 0; clean[i] != '\0'; ++i)
         if (clean[i] < ' ' || clean[i] > '~')
-	    clean[i] = '.';
+            clean[i] = '.';
     return clean;
 }
 
@@ -136,8 +136,8 @@ void decrement_log_entry_count(log_line_t *log_entry)
 }
 
 void traverse_log_lines(struct avl_table *tree, unsigned int length,
-              void (*visitor)(void *data, int index, void *user_data),
-              void *user_data)
+                        void (*visitor)(void *data, int index, void *user_data),
+                        void *user_data)
 {
     struct avl_traverser trav;
     void                 *node;

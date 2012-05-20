@@ -34,7 +34,7 @@
 
 env_t gl_env;
 
-void           got_a_new_string(char *string)
+static void got_a_new_string(char *string)
 {
     log_line_t *element;
 
@@ -44,7 +44,7 @@ void           got_a_new_string(char *string)
     curses_update();
 }
 
-void        run()
+static void run(void)
 {
     char    *string;
     size_t  size;
@@ -66,24 +66,24 @@ void        run()
         free(string);
 }
 
-void    usage_and_exit(char* program_name)
+static void usage_and_exit(char* program_name)
 {
     fprintf(stderr,
             "Usage: tail something | %s [-s history_size]\n"
             "    history_size: Number of log line to keep in memory\n"
             "                  Defaults to " STRINGIFY(DEFAULT_HISTORY_SIZE)
-	    " lines.\n",
-	    program_name);
+            " lines.\n",
+            program_name);
     exit(EXIT_FAILURE);
 }
 
-void    version_and_exit(char* program_name)
+static void version_and_exit(char* program_name)
 {
     fprintf(stderr, "%s v0.11\n", program_name);
     exit(EXIT_FAILURE);
 }
 
-void    parse_args(int ac, char **av)
+static void parse_args(int ac, char **av)
 {
     int opt;
 
@@ -92,14 +92,14 @@ void    parse_args(int ac, char **av)
     {
         switch (opt)
         {
-        case 's':
-            gl_env.history_size = atoi(optarg);
-            break;
-        case 'v':
-            version_and_exit(av[0]);
-            break;
-        default:
-            usage_and_exit(av[0]);
+            case 's':
+                gl_env.history_size = atoi(optarg);
+                break;
+            case 'v':
+                version_and_exit(av[0]);
+                break;
+            default:
+                usage_and_exit(av[0]);
         }
     }
     if (gl_env.history_size == 0)
@@ -115,5 +115,5 @@ int main(int ac, char **av)
     run();
     curses_release();
     stdout_update(10);
-    return (EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }

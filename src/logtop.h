@@ -51,10 +51,10 @@ typedef struct        s_env
 
 extern env_t gl_env;
 
-void curses_setup();
-void curses_release();
-void curses_update();
+void curses_setup(void);
+void curses_release(void);
+void curses_update(void);
 
-void stdout_update();
+void stdout_update(int nb_lines);
 
 #endif

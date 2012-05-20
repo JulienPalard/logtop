@@ -37,7 +37,7 @@ typedef struct     s_log_line
     UT_hash_handle hh;
 }                  log_line_t;
 
-void init_avl();
+void init_avl(void);
 log_line_t *get_log_entry(char *);
 void increment_log_entry_count(log_line_t *);
 void decrement_log_entry_count(log_line_t *);

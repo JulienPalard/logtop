@@ -65,7 +65,7 @@ history_element_t *newest_element_in_history()
         return &(gl_env.history[newest_item_index]);
 }
 
-void                  update_history(log_line_t *element)
+void update_history(log_line_t *element)
 {
     history_element_t *history_element;
     log_line_t        *log_entry;
@@ -84,5 +84,5 @@ void                  update_history(log_line_t *element)
 void init_history()
 {
     gl_env.history = (history_element_t*)calloc(sizeof(history_element_t),
-						gl_env.history_size);
+                                                gl_env.history_size);
 }

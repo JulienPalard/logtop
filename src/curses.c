@@ -58,7 +58,7 @@ static void curses_on_sigint(int sig)
     kill(getpid(), sig);
 }
 
-void               curses_setup()
+void curses_setup()
 {
     struct winsize ws;
 
@@ -70,7 +70,7 @@ void               curses_setup()
     initscr();
 }
 
-void    curses_release()
+void curses_release()
 {
     endwin();
 }
@@ -106,7 +106,7 @@ static void display_line_without_freq(void *data, int index, void *metadata)
              line->repr);
 }
 
-void                     curses_update()
+void curses_update()
 {
     struct line_metadata line_data;
     time_t               current_time;

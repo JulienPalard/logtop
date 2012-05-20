@@ -34,10 +34,10 @@ typedef struct s_history_element
     time_t     time;
 }              history_element_t;
 
-void init_history();
-history_element_t *oldest_element_in_history();
-history_element_t *newest_element_in_history();
-unsigned int qte_of_elements_in_history();
+void init_history(void);
+history_element_t *oldest_element_in_history(void);
+history_element_t *newest_element_in_history(void);
+unsigned int qte_of_elements_in_history(void);
 void update_history(log_line_t *element);
 
 #endif

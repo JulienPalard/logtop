@@ -14,7 +14,7 @@ CC = gcc
 INCLUDE = .
 DEFINE = _GNU_SOURCE
 LIB = -lncurses #-lefence
-CFLAGS = -O3 -W -Wall -ansi -pedantic -I$(INCLUDE)
+CFLAGS = -O3 -W -Wall -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
 RM = rm -f
 
 $(NAME):	$(OBJ)
