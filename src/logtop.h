@@ -45,6 +45,7 @@ typedef struct        s_env
     history_element_t *history;
     unsigned int      history_start;
     unsigned int      history_size;
+    unsigned int      display_width;
     unsigned int      display_height;
     time_t            last_update_time;
 }                     env_t;
@@ -54,7 +55,6 @@ extern env_t gl_env;
 void curses_setup(void);
 void curses_release(void);
 void curses_update(void);
-
 void stdout_update(int nb_lines);
 
 #endif

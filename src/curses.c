@@ -32,11 +32,13 @@
 #include "logtop.h"
 #include "history.h"
 
+static WINDOW *window;
+
 /**
  * Basic sig handling using sigaction.
  * Reset action to SIG_DFL if act is NULL.
  */
-static void setup_sighandler(int signum, void (*act)(int))
+static void setup_sighandler(int signum, int flags, void (*act)(int))
 {
     struct sigaction sa;
 
@@ -45,33 +47,57 @@ static void setup_sighandler(int signum, void (*act)(int))
         sa.sa_handler = act;
     else
         sa.sa_handler = SIG_DFL;
-    sa.sa_flags = 0;
+    sa.sa_flags = flags;
     sigaction(signum, &sa, NULL);
 }
 
 static void curses_on_sigint(int sig)
 {
     curses_release();
-    setup_sighandler(SIGINT, NULL);
+    setup_sighandler(SIGINT, 0, NULL);
     stdout_update(10);
     fflush(NULL);
     kill(getpid(), sig);
 }
 
-void curses_setup()
+static void curses_update_winsize(void)
 {
     struct winsize ws;
 
     if (ioctl(1, TIOCGWINSZ, &ws) == -1)
+    {
         gl_env.display_height = 24;
+        gl_env.display_width = 80;
+    }
     else
+    {
         gl_env.display_height = ws.ws_row;
-    setup_sighandler(SIGINT, curses_on_sigint);
+        gl_env.display_width = ws.ws_col;
+    }
+}
+
+static void curses_on_sigwinch(int sig)
+{
+    (void) sig;
+    curses_update_winsize();
+    endwin();
+    delwin(window);
+    window = newwin(gl_env.display_height, gl_env.display_width, 0, 0);
+    curses_update();
+}
+
+void curses_setup()
+{
+    curses_update_winsize();
+    setup_sighandler(SIGINT, 0, curses_on_sigint);
+    setup_sighandler(SIGWINCH, SA_RESTART, curses_on_sigwinch);
     initscr();
+    window = newwin(gl_env.display_height, gl_env.display_width, 0, 0);
 }
 
 void curses_release()
 {
+    delwin(window);
     endwin();
 }
 
@@ -87,11 +113,11 @@ static void display_line_with_freq(void *data, int index, void *metadata)
 
     line = (log_line_t *)data;
     duration = ((struct line_metadata *)metadata)->duration;
-    mvprintw(index, 0, "%4d %4d %4.2f/s %s",
-             index,
-             line->count,
-             line->count / duration,
-             line->repr);
+    mvwprintw(window, index, 0, "%4d %4d %8.2f/s %-*s",
+              index,
+              line->count,
+              line->count / duration,
+              gl_env.display_width - 21, line->repr);
 }
 
 static void display_line_without_freq(void *data, int index, void *metadata)
@@ -100,16 +126,15 @@ static void display_line_without_freq(void *data, int index, void *metadata)
 
     (void) metadata;
     line = (log_line_t *)data;
-    mvprintw(index, 0, "%4d %4d %s",
-             index,
-             line->count,
-             line->repr);
+    mvwprintw(window, index, 0, "%4d %4d %s",
+              index,
+              line->count,
+              line->repr);
 }
 
 void curses_update()
 {
     struct line_metadata line_data;
-    time_t               current_time;
     history_element_t    *oldest_element;
     history_element_t    *newest_element;
     unsigned int         qte_of_elements;
@@ -120,26 +145,23 @@ void curses_update()
     if (oldest_element != NULL && newest_element != NULL)
         line_data.duration = difftime(newest_element->time,
                                       oldest_element->time);
-    current_time = time(NULL);
-    if (current_time == gl_env.last_update_time)
-        return;
-    gl_env.last_update_time = current_time;
     qte_of_elements = qte_of_elements_in_history();
     clear();
     if (line_data.duration > 0)
-        mvprintw(0, 0, "%d elements in %d seconds (%.2f elements/s)\n",
-                 qte_of_elements,
-                 (unsigned int)line_data.duration,
-                 qte_of_elements / (double)line_data.duration);
+        mvwprintw(window, 0, 0, "%d elements in %d seconds (%.2f elements/s)",
+                  qte_of_elements,
+                  (unsigned int)line_data.duration,
+                  qte_of_elements / (double)line_data.duration,
+                  gl_env.display_height);
     else
-        mvprintw(0, 0, "%d elements in %d seconds\n",
-                 qte_of_elements,
-                 (unsigned int)line_data.duration);
+        mvwprintw(window, 0, 0, "%d elements in %d seconds",
+                  qte_of_elements,
+                  (unsigned int)line_data.duration);
     if (line_data.duration > 0)
-        traverse_log_lines(gl_env.top, gl_env.display_height,
+        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
                            display_line_with_freq, &line_data);
     else
-        traverse_log_lines(gl_env.top, gl_env.display_height,
+        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
                            display_line_without_freq, &line_data);
-    refresh();
+    wrefresh(window);
 }
