@@ -59,7 +59,7 @@ static void display_line_without_freq(void *data, int index,
            line->repr);
 }
 
-void                     stdout_update()
+void                     stdout_update(int nb_lines)
 {
     history_element_t    *oldest_element;
     history_element_t    *newest_element;
@@ -82,9 +82,9 @@ void                     stdout_update()
         printf("%d elements\n",
                qte_of_elements);
     if (line_metadata.duration > 0)
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+        traverse_log_lines(gl_env.top, nb_lines,
                            display_line_with_freq, &line_metadata);
     else
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+        traverse_log_lines(gl_env.top, nb_lines,
                            display_line_without_freq, &line_metadata);
 }

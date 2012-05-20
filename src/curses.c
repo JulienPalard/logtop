@@ -53,6 +53,7 @@ static void curses_on_sigint(int sig)
 {
     curses_release();
     setup_sighandler(SIGINT, NULL);
+    stdout_update(10);
     fflush(NULL);
     kill(getpid(), sig);
 }

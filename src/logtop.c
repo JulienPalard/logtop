@@ -114,6 +114,6 @@ int main(int ac, char **av)
     curses_setup();
     run();
     curses_release();
-    stdout_update();
+    stdout_update(10);
     return (EXIT_SUCCESS);
 }
