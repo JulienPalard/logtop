@@ -120,7 +120,7 @@ static void usage_and_exit(int exit_code)
 
 static void version_and_exit(void)
 {
-    fprintf(stdout, "logtop v0.2\n");
+    fprintf(stdout, "logtop v0.2.1\n");
     exit(EXIT_SUCCESS);
 }
 
@@ -180,10 +180,7 @@ static void parse_args(int ac, char **av)
 static void at_exit(void)
 {
     if (!gl_env.quiet && !gl_env.line_by_line)
-    {
         curses_release();
-        puts("Curses release");
-    }
     if (gl_env.line_by_line)
         stdout_update(gl_env.line_by_line, 1);
     else
