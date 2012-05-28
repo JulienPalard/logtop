@@ -1,3 +1,23 @@
+commit 43411226105af5f0b8ebb437df0fb5cfbe16a2a7
+Author: Julien Palard <julien@eeple.fr>
+Date:   Mon May 28 15:26:45 2012 +0200
+
+    FIX: Support LDFLAGS in Makefile
+
+commit 5d00e5423bdff5e3b86e26c3be151e182b9db7b0
+Author: Julien Palard <julien@eeple.fr>
+Date:   Mon May 21 15:01:50 2012 +0200
+
+    FIX: Forgot a debug.
+
+commit d7ac287638cd86615b4724d80874f86309101422
+Author: Julien Palard <julien@eeple.fr>
+Date:   Sun May 20 21:58:59 2012 +0200
+
+    Upgrading documentation and manpage.
+
+    Version is now 0.2.
+
 commit 430fa9273f1ea88379cff466a84ae926822bd8b7
 Author: Julien Palard <julien@eeple.fr>
 Date:   Sun May 20 21:25:57 2012 +0200

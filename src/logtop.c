@@ -120,7 +120,7 @@ static void usage_and_exit(int exit_code)
 
 static void version_and_exit(void)
 {
-    fprintf(stdout, "logtop v0.2.1\n");
+    fprintf(stdout, "logtop v0.2.2\n");
     exit(EXIT_SUCCESS);
 }
 

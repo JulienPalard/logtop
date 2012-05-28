@@ -16,9 +16,10 @@ DEFINE = _GNU_SOURCE
 LIB = -lncurses #-lefence
 CFLAGS = -O3 -W -Wall -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
 RM = rm -f
+LDFLAGS =
 
 $(NAME):	$(OBJ)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB)
+		$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB) $(LDFLAGS)
 
 install:	$(NAME)
 		mkdir -p $(DESTDIR)/usr/bin/
@@ -32,6 +33,6 @@ all:
 
 clean:
 		$(RM) $(NAME) $(DSRC)/*~ $(DSRC)/#*# $(DSRC)/*.o $(DSRC)/*.core \
-              $(DSRC)/libavl/*.o
+				$(DSRC)/libavl/*.o
 
 re:		clean all
