@@ -98,7 +98,7 @@ static void run(void)
 static void usage_and_exit(int exit_code)
 {
     fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
-            "Usage: tail something | logtop [OPTIONS]\n"
+            "Usage: tail -f something | logtop [OPTIONS]\n"
             "    -s, --size=NUM         Number of log line to keep in memory\n"
             "                           Defaults to : "
             STRINGIFY(DEFAULT_HISTORY_SIZE) "\n"
@@ -113,7 +113,7 @@ static void usage_and_exit(int exit_code)
             "  Line by line format is : [%%d %%f %%s\\t]*\\n\n"
             "    %%d : Number of occurences\n"
             "    %%f : Frequency of apparition\n"
-            "    %%s : String (Control chars replaced by dots.\n"
+            "    %%s : String (Control chars replaced by dots).\n"
             "\n");
     exit(exit_code);
 }
