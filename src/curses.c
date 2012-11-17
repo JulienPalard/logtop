@@ -119,7 +119,7 @@ void curses_update()
         line_data.duration = difftime(newest_element->time,
                                       oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
-    clear();
+    werase(window);
     if (line_data.duration > 0)
         mvwprintw(window, 0, 0, "%d elements in %d seconds (%.2f elements/s)",
                   qte_of_elements,
