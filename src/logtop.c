@@ -53,14 +53,10 @@ void setup_sighandler(int signum, int flags, void (*act)(int))
     sigaction(signum, &sa, NULL);
 }
 
-static void got_a_new_string(char *string)
+static void update_display(int sig __attribute__((unused)))
 {
-    log_line_t *element;
     time_t     current_time;
 
-    element = get_log_entry(string);
-    increment_log_entry_count(element);
-    update_history(element);
     if (gl_env.quiet)
         return ;
     current_time = time(NULL);
@@ -71,6 +67,17 @@ static void got_a_new_string(char *string)
         stdout_update(gl_env.line_by_line, 1);
     else
         curses_update();
+    alarm(1);
+}
+
+static void got_a_new_string(char *string)
+{
+    log_line_t *element;
+
+    element = get_log_entry(string);
+    increment_log_entry_count(element);
+    update_history(element);
+    update_display(0);
 }
 
 static void run(void)
@@ -199,6 +206,8 @@ int main(int ac, char **av)
 {
     parse_args(ac, av);
     setup_sighandler(SIGINT, 0, on_sigint);
+    setup_sighandler(SIGALRM, SA_RESTART, update_display);
+    alarm(1);
     init_history();
     init_avl();
     if (!gl_env.quiet && !gl_env.line_by_line)
