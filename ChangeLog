@@ -1,3 +1,7 @@
+2012-11-17 17:00:33 +0100 Julien Palard <julien@palard.fr>
+
+	* FIX: Diplay consistency in curses mode
+
 2012-11-17 16:59:57 +0100 Julien Palard <julien@palard.fr>
 
 	* FIX: Update display every second even in the absence of new lines

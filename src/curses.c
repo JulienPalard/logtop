@@ -99,10 +99,10 @@ static void display_line_without_freq(void *data, int index, void *metadata)
 
     (void) metadata;
     line = (log_line_t *)data;
-    mvwprintw(window, index, 0, "%4d %4d %s",
+    mvwprintw(window, index, 0, "%4d %4d     lots/s %-*s",
               index,
               line->count,
-              line->repr);
+              gl_env.display_width - 21, line->repr);
 }
 
 void curses_update()
@@ -120,21 +120,21 @@ void curses_update()
                                       oldest_element->time);
     qte_of_elements = qte_of_elements_in_history();
     werase(window);
-    if (line_data.duration > 0)
+    if (line_data.duration == 0)
+        mvwprintw(window, 0, 0, "%d elements in less than 1 second",
+                  qte_of_elements,
+                  (unsigned int)line_data.duration);
+    else
         mvwprintw(window, 0, 0, "%d elements in %d seconds (%.2f elements/s)",
                   qte_of_elements,
                   (unsigned int)line_data.duration,
                   qte_of_elements / (double)line_data.duration,
                   gl_env.display_height);
-    else
-        mvwprintw(window, 0, 0, "%d elements in %d seconds",
-                  qte_of_elements,
-                  (unsigned int)line_data.duration);
-    if (line_data.duration > 0)
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
-                           display_line_with_freq, &line_data);
-    else
+    if (line_data.duration == 0)
         traverse_log_lines(gl_env.top, gl_env.display_height - 1,
                            display_line_without_freq, &line_data);
+    else
+        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
+                           display_line_with_freq, &line_data);
     wrefresh(window);
 }
