@@ -1,3 +1,7 @@
+2012-11-17 17:28:44 +0100 Julien Palard <julien@palard.fr>
+
+	* ADD: check-syntax in Makefile for Flymake
+
 2012-11-17 17:00:33 +0100 Julien Palard <julien@palard.fr>
 
 	* FIX: Diplay consistency in curses mode

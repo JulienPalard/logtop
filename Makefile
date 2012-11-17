@@ -12,9 +12,8 @@ SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/history.c $(DSRC)/curses.c \
 OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .
-DEFINE = _GNU_SOURCE
 LIB = -lncurses #-lefence
-CFLAGS = -O3 -W -Wall -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
+CFLAGS = -O3 -Wall -Wextra -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
 RM = rm -f
 LDFLAGS =
 
@@ -29,10 +28,13 @@ all:
 		@make $(NAME)
 
 .c.o:
-		$(CC) -D $(DEFINE) -c $(CFLAGS) $< -o $(<:.c=.o)
+		$(CC) -c $(CFLAGS) $< -o $(<:.c=.o)
 
 clean:
 		$(RM) $(NAME) $(DSRC)/*~ $(DSRC)/#*# $(DSRC)/*.o $(DSRC)/*.core \
 				$(DSRC)/libavl/*.o
 
 re:		clean all
+
+check-syntax:
+		gcc -Isrc -Wall -Wextra -ansi -pedantic -o /dev/null -S ${CHK_SOURCES}
