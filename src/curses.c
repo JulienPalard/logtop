@@ -35,7 +35,7 @@
 
 static WINDOW *window;
 
-static void curses_update_winsize(void)
+static void update_winsize(void)
 {
     struct winsize ws;
 
@@ -51,10 +51,9 @@ static void curses_update_winsize(void)
     }
 }
 
-static void curses_on_sigwinch(int sig)
+static void on_sigwinch(int sig __attribute__((unused)))
 {
-    (void) sig;
-    curses_update_winsize();
+    update_winsize();
     endwin();
     delwin(window);
     window = newwin(gl_env.display_height, gl_env.display_width, 0, 0);
@@ -63,8 +62,8 @@ static void curses_on_sigwinch(int sig)
 
 void curses_setup()
 {
-    curses_update_winsize();
-    setup_sighandler(SIGWINCH, SA_RESTART, curses_on_sigwinch);
+    update_winsize();
+    setup_sighandler(SIGWINCH, SA_RESTART, on_sigwinch);
     initscr();
     window = newwin(gl_env.display_height, gl_env.display_width, 0, 0);
 }
@@ -75,67 +74,51 @@ void curses_release()
     endwin();
 }
 
-struct line_metadata
+struct display_data
 {
-    double duration;
+    double       duration;
+    unsigned int qte_of_elements;
 };
 
-static void display_line_with_freq(void *data, int index, void *metadata)
+static void display_line(void *data, int index, void *display_data)
 {
     log_line_t *line;
-    double     duration;
 
     line = (log_line_t *)data;
-    duration = ((struct line_metadata *)metadata)->duration;
-    mvwprintw(window, index, 0, "%4d %4d %8.2f/s %-*s",
+    mvwprintw(window, index + 1, 0, "%4d %6d %8.2f %-*s",
               index,
               line->count,
-              line->count / duration,
+              line->count / ((struct display_data*)display_data)->duration,
               gl_env.display_width - 21, line->repr);
 }
 
-static void display_line_without_freq(void *data, int index, void *metadata)
+static void display_header(struct display_data *display_data)
 {
-    log_line_t *line;
-
-    (void) metadata;
-    line = (log_line_t *)data;
-    mvwprintw(window, index, 0, "%4d %4d     lots/s %-*s",
-              index,
-              line->count,
-              gl_env.display_width - 21, line->repr);
+    mvwprintw(window, 0, 0,
+              "%u lines, %.2f lines/s",
+              display_data->qte_of_elements,
+              display_data->qte_of_elements / display_data->duration);
+    mvwprintw(window, 1, 0,
+              "RANK    CNT   LINE/S LINE");
+    mvwchgat(window, 1, 0, -1, A_REVERSE, 0, NULL);
 }
 
 void curses_update()
 {
-    struct line_metadata line_data;
-    history_element_t    *oldest_element;
-    history_element_t    *newest_element;
-    unsigned int         qte_of_elements;
+    struct display_data display_data;
+    history_element_t  *oldest_element;
+    history_element_t  *newest_element;
 
-    line_data.duration = 0;
+    display_data.duration = 0;
     oldest_element = oldest_element_in_history();
     newest_element = newest_element_in_history();
     if (oldest_element != NULL && newest_element != NULL)
-        line_data.duration = difftime(newest_element->time,
-                                      oldest_element->time);
-    qte_of_elements = qte_of_elements_in_history();
+        display_data.duration = difftime(newest_element->time,
+                                         oldest_element->time);
+    display_data.qte_of_elements = qte_of_elements_in_history();
     werase(window);
-    if (line_data.duration == 0)
-        mvwprintw(window, 0, 0, "%d elements in less than 1 second",
-                  qte_of_elements,
-                  (unsigned int)line_data.duration);
-    else
-        mvwprintw(window, 0, 0, "%d elements in %d seconds (%.2f elements/s)",
-                  qte_of_elements,
-                  (unsigned int)line_data.duration,
-                  qte_of_elements / (double)line_data.duration,
-                  gl_env.display_height);
-    if (line_data.duration == 0)
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
-                           display_line_without_freq, &line_data);
-    else
-        traverse_log_lines(gl_env.top, gl_env.display_height - 1,
-                           display_line_with_freq, &line_data);
+    display_header(&display_data);
+    traverse_log_lines(gl_env.top, gl_env.display_height - 2,
+                       display_line, &display_data);
     wrefresh(window);
 }

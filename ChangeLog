@@ -1,3 +1,7 @@
+2012-11-17 23:48:35 +0100 Julien Palard <julien@palard.fr>
+
+	* UPDATE: Display improvment
+
 2012-11-17 17:28:44 +0100 Julien Palard <julien@palard.fr>
 
 	* ADD: check-syntax in Makefile for Flymake
