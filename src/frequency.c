@@ -23,26 +23,33 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __AVL_H__
-#define __AVL_H__
+#include <stdlib.h>
+#include "frequency.h"
 
-#include "libavl/avl.h"
-#include <uthash.h>
-
-typedef struct     s_log_line
+logtop *new_frequency_analyzer(size_t history_size)
 {
-    char           *string;
-    char           *repr;
-    unsigned int   count;
-    UT_hash_handle hh;
-}                  log_line_t;
+    logtop *logtop;
 
-void init_avl(void);
-log_line_t *get_log_entry(char *);
-void increment_log_entry_count(log_line_t *);
-void decrement_log_entry_count(log_line_t *);
-void traverse_log_lines(struct avl_table *tree, unsigned int length,
-              void (*visitor)(void *data, int index, void *user_data),
-              void *user_data);
+    logtop = malloc(sizeof(*logtop));
+    logtop->history_size = history_size;
+    if (logtop == NULL)
+        return NULL;
+    init_history(logtop);
+    init_avl(logtop);
+    return logtop;
+}
 
-#endif
+void delete_frequency_analyzer(logtop *this)
+{
+    free(this);
+    /* ... */
+}
+
+void frequency_analyzer_feed(logtop *this, char *string)
+{
+    log_line_t *element;
+
+    element = get_log_entry(this, string);
+    increment_log_entry_count(this, element);
+    update_history(this, element);
+}

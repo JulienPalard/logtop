@@ -24,16 +24,12 @@
  */
 
 #define _GNU_SOURCE
-#include <string.h>
-#include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
 #include <getopt.h>
 #include "logtop.h"
-#include "history.h"
-#include "avl.h"
 
 env_t gl_env;
 
@@ -71,17 +67,7 @@ static void update_display(int sig __attribute__((unused)))
     alarm(1);
 }
 
-static void got_a_new_string(char *string)
-{
-    log_line_t *element;
-
-    element = get_log_entry(string);
-    increment_log_entry_count(element);
-    update_history(element);
-    update_display(0);
-}
-
-static void run(void)
+static void run(logtop *logtop)
 {
     char    *string;
     size_t  size;
@@ -97,7 +83,7 @@ static void run(void)
             string[str_length - 1] = '\0';
             str_length -= 1;
         }
-        got_a_new_string(string);
+        frequency_analyzer_feed(logtop, string);
     }
     if (string != NULL)
         free(string);
@@ -209,11 +195,11 @@ int main(int ac, char **av)
     setup_sighandler(SIGINT, 0, on_sigint);
     setup_sighandler(SIGALRM, SA_RESTART, update_display);
     alarm(1);
-    init_history();
-    init_avl();
+    gl_env.last_update_time = time(NULL);
+    gl_env.logtop = new_frequency_analyzer(gl_env.history_size);
     if (!gl_env.quiet && !gl_env.line_by_line)
         curses_setup();
-    run();
+    run(gl_env.logtop);
     at_exit();
     return EXIT_SUCCESS;
 }

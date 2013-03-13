@@ -8,7 +8,7 @@
 NAME = logtop
 DSRC = src
 SRC = $(DSRC)/logtop.c $(DSRC)/avl.c $(DSRC)/history.c $(DSRC)/curses.c \
-      $(DSRC)/stdout.c $(DSRC)/libavl/avl.c
+      $(DSRC)/stdout.c $(DSRC)/frequency.c $(DSRC)/libavl/avl.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .

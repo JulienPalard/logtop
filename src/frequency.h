@@ -23,38 +23,55 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __LOGTOP_H__
-#define __LOGTOP_H__
+#ifndef __FREQUENCY_H__
+#define __FREQUENCY_H__
 
 #include <time.h>
+#include <uthash.h>
 
+#include "libavl/avl.h"
 #include "frequency.h"
 
-#ifndef STRINGIFY
-#  define __LOGTOP_STRINGIFY(x) #x
-#  define STRINGIFY(x) __LOGTOP_STRINGIFY(x)
-#endif
-
-#define DEFAULT_HISTORY_SIZE 10000
-
-typedef struct        s_env
+typedef struct     s_log_line
 {
-    int               quiet;
-    int               line_by_line;
+    char           *string;
+    char           *repr;
+    unsigned int   count;
+    UT_hash_handle hh;
+}                  log_line_t;
+
+typedef struct s_history_element
+{
+    log_line_t *log_entry;
+    time_t     time;
+}              history_element_t;
+
+typedef struct        s_logtop
+{
+    log_line_t        *strings;
+    struct avl_table  *top;
+    history_element_t *history;
+    unsigned int      history_start;
     unsigned int      history_size;
-    unsigned int      display_width;
-    unsigned int      display_height;
-    time_t            last_update_time;
-    time_t            interval;
-    logtop            *logtop;
-}                     env_t;
+}                     logtop;
 
-extern env_t gl_env;
+void init_history(logtop *this);
+history_element_t *oldest_element_in_history(logtop *this);
+history_element_t *newest_element_in_history(logtop *this);
+unsigned int qte_of_elements_in_history(logtop *this);
+void update_history(logtop *this, log_line_t *element);
 
-void curses_setup(void);
-void curses_release(void);
-void curses_update(void);
-void stdout_update(int nb_lines, int line_by_line);
-void setup_sighandler(int signum, int flags, void (*act)(int));
+void init_avl(logtop *logtop);
+log_line_t *get_log_entry(logtop *logtop, char *);
+void increment_log_entry_count(logtop *logtop, log_line_t *);
+void decrement_log_entry_count(logtop *logtop, log_line_t *);
+void traverse_log_lines(logtop *logtop,
+                        unsigned int length,
+                        void (*visitor)(void *data, int index, void *user_data),
+                        void *user_data);
+
+logtop *new_frequency_analyzer(size_t history_size);
+void delete_frequency_analyzer(logtop *this);
+void frequency_analyzer_feed(logtop *this, char *line);
 
 #endif

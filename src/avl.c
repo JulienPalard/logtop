@@ -27,7 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "logtop.h"
+#include "frequency.h"
+
 
 static int compare_log_lines_count(const void *log_line1,
                                    const void *log_line2,
@@ -67,7 +68,7 @@ static char *repr(const char *str)
     return clean;
 }
 
-static log_line_t *create_log_entry(char *string)
+static log_line_t *create_log_entry(logtop *this, char *string)
 {
     log_line_t *entry;
 
@@ -81,69 +82,70 @@ static log_line_t *create_log_entry(char *string)
     entry->repr = repr(string);
     if (entry->repr == NULL)
         die();
-    HASH_ADD_KEYPTR(hh, gl_env.strings, entry->string, strlen(entry->string),
+    HASH_ADD_KEYPTR(hh, this->strings, entry->string, strlen(entry->string),
                     entry);
-    avl_insert(gl_env.top, entry);
+    avl_insert(this->top, entry);
     return entry;
 }
 
-static void delete_log_entry(log_line_t *log_entry)
+static void delete_log_entry(logtop *this, log_line_t *log_entry)
 {
-    HASH_DEL(gl_env.strings, log_entry);
+    HASH_DEL(this->strings, log_entry);
     free(log_entry->string);
     free(log_entry->repr);
     free(log_entry);
 }
 
-void    init_avl()
+void    init_avl(logtop *this)
 {
-    gl_env.history_start = 0;
-    gl_env.last_update_time = time(NULL);
-    gl_env.strings = NULL;
-    gl_env.top = avl_create(compare_log_lines_count, NULL, NULL);
-    if (gl_env.top == NULL)
+    this->history_start = 0;
+    this->strings = NULL;
+    this->top = avl_create(compare_log_lines_count, NULL, NULL);
+    if (this->top == NULL)
     {
         fputs("Not enough memory to create storage", stderr);
         exit(EXIT_FAILURE);
     }
 }
 
-log_line_t *get_log_entry(char *string)
+log_line_t *get_log_entry(logtop *this, char *string)
 {
     log_line_t *node;
 
-    HASH_FIND_STR(gl_env.strings, string, node);
+    HASH_FIND_STR(this->strings, string, node);
     if (node != NULL)
         return node;
     else
-        return create_log_entry(string);
+        return create_log_entry(this, string);
 }
 
-void increment_log_entry_count(log_line_t *log_entry)
+void increment_log_entry_count(logtop *this, log_line_t *log_entry)
 {
-    avl_delete(gl_env.top, log_entry);
+    avl_delete(this->top, log_entry);
     log_entry->count += 1;
-    avl_insert(gl_env.top, log_entry);
+    avl_insert(this->top, log_entry);
 }
 
-void decrement_log_entry_count(log_line_t *log_entry)
+void decrement_log_entry_count(logtop *this, log_line_t *log_entry)
 {
-    avl_delete(gl_env.top, log_entry);
+    avl_delete(this->top, log_entry);
     log_entry->count -= 1;
     if (log_entry->count != 0)
-        avl_insert(gl_env.top, log_entry);
+        avl_insert(this->top, log_entry);
     else
-        delete_log_entry(log_entry);
+        delete_log_entry(this, log_entry);
 }
 
-void traverse_log_lines(struct avl_table *tree, unsigned int length,
+void traverse_log_lines(logtop *logtop, unsigned int length,
                         void (*visitor)(void *data, int index, void *user_data),
                         void *user_data)
 {
     struct avl_traverser trav;
     void                 *node;
     unsigned int         last;
+    struct avl_table *tree;
 
+    tree = logtop->top;
     last = length;
     node = avl_t_first(&trav, tree);
     while (length-- > 0 && node != NULL)

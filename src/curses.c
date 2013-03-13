@@ -31,7 +31,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include "logtop.h"
-#include "history.h"
 
 static WINDOW *window;
 
@@ -80,7 +79,8 @@ struct display_data
     unsigned int qte_of_elements;
 };
 
-static void display_line(void *data, int index, void *display_data)
+static void display_line(void *data __attribute__((unused)),
+                         int index, void *display_data)
 {
     log_line_t *line;
 
@@ -110,15 +110,15 @@ void curses_update()
     history_element_t  *newest_element;
 
     display_data.duration = 0;
-    oldest_element = oldest_element_in_history();
-    newest_element = newest_element_in_history();
+    oldest_element = oldest_element_in_history(gl_env.logtop);
+    newest_element = newest_element_in_history(gl_env.logtop);
     if (oldest_element != NULL && newest_element != NULL)
         display_data.duration = difftime(newest_element->time,
                                          oldest_element->time);
-    display_data.qte_of_elements = qte_of_elements_in_history();
+    display_data.qte_of_elements = qte_of_elements_in_history(gl_env.logtop);
     werase(window);
     display_header(&display_data);
-    traverse_log_lines(gl_env.top, gl_env.display_height - 2,
+    traverse_log_lines(gl_env.logtop, gl_env.display_height - 2,
                        display_line, &display_data);
     wrefresh(window);
 }
