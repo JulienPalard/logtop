@@ -30,7 +30,7 @@
 #include <uthash.h>
 
 #include "libavl/avl.h"
-#include "frequency.h"
+#include "logtop.h"
 
 typedef struct     s_log_line
 {

@@ -28,7 +28,7 @@
 
 #include <time.h>
 
-#include "frequency.h"
+#include "logtop.h"
 
 #ifndef STRINGIFY
 #  define __LOGTOP_STRINGIFY(x) #x

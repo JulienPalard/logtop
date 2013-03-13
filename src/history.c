@@ -24,7 +24,7 @@
  */
 
 #include <stdlib.h>
-#include "frequency.h"
+#include "logtop.h"
 
 /*
 ** If the element under history_start is null

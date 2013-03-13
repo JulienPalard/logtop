@@ -24,7 +24,7 @@
  */
 
 #include <stdlib.h>
-#include "frequency.h"
+#include "logtop.h"
 
 logtop *new_frequency_analyzer(size_t history_size)
 {

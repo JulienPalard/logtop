@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "frequency.h"
+#include "logtop.h"
 
 
 static int compare_log_lines_count(const void *log_line1,
