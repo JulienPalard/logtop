@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <getopt.h>
-#include "logtop.h"
+#include "main.h"
 
 env_t gl_env;
 

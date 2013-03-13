@@ -24,7 +24,7 @@
  */
 
 #include <stdio.h>
-#include "logtop.h"
+#include "main.h"
 
 struct display_data
 {

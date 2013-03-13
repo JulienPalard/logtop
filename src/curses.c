@@ -30,7 +30,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
-#include "logtop.h"
+#include "main.h"
 
 static WINDOW *window;
 
