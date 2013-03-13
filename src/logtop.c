@@ -56,3 +56,17 @@ void logtop_feed(logtop *this, char *string)
     avl_increment(this, element);
     history_update(this, element);
 }
+
+static void logtop_get_fill(void *data, int index, void *display_data)
+{
+    ((log_line_t **)display_data)[index - 1] = (log_line_t *)data;
+}
+
+log_line_t **logtop_get(logtop *this, size_t qte)
+{
+    log_line_t **items;
+
+    items = calloc(qte + 1, sizeof(*items));
+    avl_traverse(this, qte, logtop_get_fill, items);
+    return items;
+}

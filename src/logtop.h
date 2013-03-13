@@ -74,5 +74,6 @@ void avl_traverse(logtop *this, unsigned int length,
 logtop *new_logtop(size_t history_size);
 void delete_logtop(logtop *this);
 void logtop_feed(logtop *this, char *line);
+log_line_t **logtop_get(logtop *this, size_t qte);
 
 #endif

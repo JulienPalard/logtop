@@ -79,8 +79,7 @@ struct display_data
     unsigned int qte_of_elements;
 };
 
-static void display_line(void *data __attribute__((unused)),
-                         int index, void *display_data)
+static void display_line(void *data, int index, void *display_data)
 {
     log_line_t *line;
 
