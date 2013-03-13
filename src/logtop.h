@@ -55,23 +55,24 @@ typedef struct        s_logtop
     unsigned int      history_size;
 }                     logtop;
 
-void init_history(logtop *this);
-history_element_t *oldest_element_in_history(logtop *this);
-history_element_t *newest_element_in_history(logtop *this);
-unsigned int qte_of_elements_in_history(logtop *this);
-void update_history(logtop *this, log_line_t *element);
+history_element_t *new_history(logtop *this);
+void delete_history(logtop *this);
+history_element_t *history_oldest_element(logtop *this);
+history_element_t *history_newest_element(logtop *this);
+unsigned int history_length(logtop *this);
+void history_update(logtop *this, log_line_t *element);
 
-void init_avl(logtop *logtop);
-log_line_t *get_log_entry(logtop *logtop, char *);
-void increment_log_entry_count(logtop *logtop, log_line_t *);
-void decrement_log_entry_count(logtop *logtop, log_line_t *);
-void traverse_log_lines(logtop *logtop,
-                        unsigned int length,
-                        void (*visitor)(void *data, int index, void *user_data),
-                        void *user_data);
+struct avl_table *new_avl(logtop *this);
+void delete_avl(logtop *this);
+log_line_t *avl_get(logtop *this, char *);
+void avl_increment(logtop *this, log_line_t *);
+void avl_decrement(logtop *this, log_line_t *);
+void avl_traverse(logtop *this, unsigned int length,
+                  void (*visitor)(void *data, int index, void *user_data),
+                  void *user_data);
 
-logtop *new_frequency_analyzer(size_t history_size);
-void delete_frequency_analyzer(logtop *this);
-void frequency_analyzer_feed(logtop *this, char *line);
+logtop *new_logtop(size_t history_size);
+void delete_logtop(logtop *this);
+void logtop_feed(logtop *this, char *line);
 
 #endif

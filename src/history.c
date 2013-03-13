@@ -30,7 +30,7 @@
 ** If the element under history_start is null
 ** then the history is not full.
 */
-unsigned int qte_of_elements_in_history(logtop *this)
+unsigned int history_length(logtop *this)
 {
     if (this->history[this->history_start].log_entry == NULL)
         return this->history_start;
@@ -38,7 +38,7 @@ unsigned int qte_of_elements_in_history(logtop *this)
         return this->history_size;
 }
 
-history_element_t *oldest_element_in_history(logtop *this)
+history_element_t *history_oldest_element(logtop *this)
 {
     if (this->history[this->history_start].log_entry != NULL)
     {
@@ -52,7 +52,7 @@ history_element_t *oldest_element_in_history(logtop *this)
     }
 }
 
-history_element_t *newest_element_in_history(logtop *this)
+history_element_t *history_newest_element(logtop *this)
 {
     int           newest_item_index;
 
@@ -65,7 +65,7 @@ history_element_t *newest_element_in_history(logtop *this)
         return &(this->history[newest_item_index]);
 }
 
-void update_history(logtop *this, log_line_t *element)
+void history_update(logtop *this, log_line_t *element)
 {
     history_element_t *history_element;
     log_line_t        *log_entry;
@@ -73,7 +73,7 @@ void update_history(logtop *this, log_line_t *element)
     history_element = &(this->history[this->history_start]);
     log_entry = history_element->log_entry;
     if (log_entry != NULL)
-        decrement_log_entry_count(this, log_entry);
+        avl_decrement(this, log_entry);
     this->history[this->history_start].log_entry = element;
     this->history[this->history_start].time = time(NULL);
     this->history_start += 1;
@@ -81,8 +81,12 @@ void update_history(logtop *this, log_line_t *element)
         this->history_start = 0;
 }
 
-void init_history(logtop *this)
+history_element_t *new_history(logtop *this)
 {
-    this->history = (history_element_t*)calloc(sizeof(history_element_t),
-                                               this->history_size);
+    return calloc(sizeof(history_element_t), this->history_size);
+}
+
+void delete_history(logtop *this)
+{
+    free(this->history);
 }

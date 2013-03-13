@@ -96,19 +96,22 @@ static void delete_log_entry(logtop *this, log_line_t *log_entry)
     free(log_entry);
 }
 
-void    init_avl(logtop *this)
+struct avl_table     *new_avl(logtop *this)
 {
-    this->history_start = 0;
-    this->strings = NULL;
-    this->top = avl_create(compare_log_lines_count, NULL, NULL);
-    if (this->top == NULL)
-    {
-        fputs("Not enough memory to create storage", stderr);
-        exit(EXIT_FAILURE);
-    }
+    return avl_create(compare_log_lines_count, this, NULL);
 }
 
-log_line_t *get_log_entry(logtop *this, char *string)
+static void free_avl_element(void *avl_item, void *avl_param)
+{
+    delete_log_entry((logtop *)avl_param, (log_line_t *)avl_item);
+}
+
+void delete_avl(logtop *this)
+{
+    avl_destroy(this->top, free_avl_element);
+}
+
+log_line_t *avl_get(logtop *this, char *string)
 {
     log_line_t *node;
 
@@ -119,14 +122,14 @@ log_line_t *get_log_entry(logtop *this, char *string)
         return create_log_entry(this, string);
 }
 
-void increment_log_entry_count(logtop *this, log_line_t *log_entry)
+void avl_increment(logtop *this, log_line_t *log_entry)
 {
     avl_delete(this->top, log_entry);
     log_entry->count += 1;
     avl_insert(this->top, log_entry);
 }
 
-void decrement_log_entry_count(logtop *this, log_line_t *log_entry)
+void avl_decrement(logtop *this, log_line_t *log_entry)
 {
     avl_delete(this->top, log_entry);
     log_entry->count -= 1;
@@ -136,14 +139,14 @@ void decrement_log_entry_count(logtop *this, log_line_t *log_entry)
         delete_log_entry(this, log_entry);
 }
 
-void traverse_log_lines(logtop *logtop, unsigned int length,
-                        void (*visitor)(void *data, int index, void *user_data),
-                        void *user_data)
+void avl_traverse(logtop *logtop, unsigned int length,
+                  void (*visitor)(void *data, int index, void *user_data),
+                  void *user_data)
 {
     struct avl_traverser trav;
     void                 *node;
     unsigned int         last;
-    struct avl_table *tree;
+    struct avl_table     *tree;
 
     tree = logtop->top;
     last = length;

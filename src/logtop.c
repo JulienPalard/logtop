@@ -26,30 +26,33 @@
 #include <stdlib.h>
 #include "logtop.h"
 
-logtop *new_frequency_analyzer(size_t history_size)
+logtop *new_logtop(size_t history_size)
 {
-    logtop *logtop;
+    logtop *this;
 
-    logtop = malloc(sizeof(*logtop));
-    logtop->history_size = history_size;
-    if (logtop == NULL)
+    this = malloc(sizeof(*this));
+    if (this == NULL)
         return NULL;
-    init_history(logtop);
-    init_avl(logtop);
-    return logtop;
+    this->history_start = 0;
+    this->history_size = history_size;
+    this->strings = NULL;
+    this->history = new_history(this);
+    this->top = new_avl(this);
+    return this;
 }
 
-void delete_frequency_analyzer(logtop *this)
+void delete_logtop(logtop *this)
 {
+    delete_history(this);
+    delete_avl(this);
     free(this);
-    /* ... */
 }
 
-void frequency_analyzer_feed(logtop *this, char *string)
+void logtop_feed(logtop *this, char *string)
 {
     log_line_t *element;
 
-    element = get_log_entry(this, string);
-    increment_log_entry_count(this, element);
-    update_history(this, element);
+    element = avl_get(this, string);
+    avl_increment(this, element);
+    history_update(this, element);
 }

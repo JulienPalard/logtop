@@ -83,7 +83,7 @@ static void run(logtop *logtop)
             string[str_length - 1] = '\0';
             str_length -= 1;
         }
-        frequency_analyzer_feed(logtop, string);
+        logtop_feed(logtop, string);
     }
     if (string != NULL)
         free(string);
@@ -179,6 +179,7 @@ static void at_exit(void)
         stdout_update(gl_env.line_by_line, 1);
     else
         stdout_update(10, 0);
+    delete_logtop(gl_env.logtop);
     fflush(NULL);
 }
 
@@ -196,7 +197,7 @@ int main(int ac, char **av)
     setup_sighandler(SIGALRM, SA_RESTART, update_display);
     alarm(1);
     gl_env.last_update_time = time(NULL);
-    gl_env.logtop = new_frequency_analyzer(gl_env.history_size);
+    gl_env.logtop = new_logtop(gl_env.history_size);
     if (!gl_env.quiet && !gl_env.line_by_line)
         curses_setup();
     run(gl_env.logtop);

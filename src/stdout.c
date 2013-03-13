@@ -78,15 +78,15 @@ void stdout_update(int nb_results, int line_by_line)
     struct display_data display_data;
 
     display_data.duration = 1;
-    oldest_element = oldest_element_in_history(gl_env.logtop);
-    newest_element = newest_element_in_history(gl_env.logtop);
+    oldest_element = history_oldest_element(gl_env.logtop);
+    newest_element = history_newest_element(gl_env.logtop);
     if (oldest_element != NULL && newest_element != NULL)
         display_data.duration = difftime(newest_element->time,
                                          oldest_element->time);
-    display_data.qte_of_elements = qte_of_elements_in_history(gl_env.logtop);
+    display_data.qte_of_elements = history_length(gl_env.logtop);
     if (line_by_line)
     {
-        traverse_log_lines(gl_env.logtop, nb_results,
+        avl_traverse(gl_env.logtop, nb_results,
                            display_result,
                            &display_data);
         printf("\n");
@@ -94,7 +94,7 @@ void stdout_update(int nb_results, int line_by_line)
     else
     {
         display_header(&display_data);
-        traverse_log_lines(gl_env.logtop, nb_results,
+        avl_traverse(gl_env.logtop, nb_results,
                            display_line,
                            &display_data);
     }
