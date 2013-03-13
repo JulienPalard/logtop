@@ -46,34 +46,34 @@ typedef struct s_history_element
     time_t     time;
 }              history_element_t;
 
-typedef struct        s_logtop
+struct        logtop
 {
     log_line_t        *strings;
     struct avl_table  *top;
     history_element_t *history;
     unsigned int      history_start;
     unsigned int      history_size;
-}                     logtop;
+};
 
-history_element_t *new_history(logtop *this);
-void delete_history(logtop *this);
-history_element_t *history_oldest_element(logtop *this);
-history_element_t *history_newest_element(logtop *this);
-unsigned int history_length(logtop *this);
-void history_update(logtop *this, log_line_t *element);
+history_element_t *new_history(struct logtop *this);
+void delete_history(struct logtop *this);
+history_element_t *history_oldest_element(struct logtop *this);
+history_element_t *history_newest_element(struct logtop *this);
+unsigned int history_length(struct logtop *this);
+void history_update(struct logtop *this, log_line_t *element);
 
-struct avl_table *new_avl(logtop *this);
-void delete_avl(logtop *this);
-log_line_t *avl_get(logtop *this, char *);
-void avl_increment(logtop *this, log_line_t *);
-void avl_decrement(logtop *this, log_line_t *);
-void avl_traverse(logtop *this, unsigned int length,
+struct avl_table *new_avl(struct logtop *this);
+void delete_avl(struct logtop *this);
+log_line_t *avl_get(struct logtop *this, char *);
+void avl_increment(struct logtop *this, log_line_t *);
+void avl_decrement(struct logtop *this, log_line_t *);
+void avl_traverse(struct logtop *this, unsigned int length,
                   void (*visitor)(void *data, int index, void *user_data),
                   void *user_data);
 
-logtop *new_logtop(size_t history_size);
-void delete_logtop(logtop *this);
-void logtop_feed(logtop *this, char *line);
-log_line_t **logtop_get(logtop *this, size_t qte);
+struct logtop*new_logtop(size_t history_size);
+void delete_logtop(struct logtop *this);
+void logtop_feed(struct logtop *this, char *line);
+log_line_t **logtop_get(struct logtop *this, size_t qte);
 
 #endif

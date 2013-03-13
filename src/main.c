@@ -67,7 +67,7 @@ static void update_display(int sig __attribute__((unused)))
     alarm(1);
 }
 
-static void run(logtop *logtop)
+static void run(struct logtop *logtop)
 {
     char    *string;
     size_t  size;

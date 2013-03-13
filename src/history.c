@@ -30,7 +30,7 @@
 ** If the element under history_start is null
 ** then the history is not full.
 */
-unsigned int history_length(logtop *this)
+unsigned int history_length(struct logtop *this)
 {
     if (this->history[this->history_start].log_entry == NULL)
         return this->history_start;
@@ -38,7 +38,7 @@ unsigned int history_length(logtop *this)
         return this->history_size;
 }
 
-history_element_t *history_oldest_element(logtop *this)
+history_element_t *history_oldest_element(struct logtop *this)
 {
     if (this->history[this->history_start].log_entry != NULL)
     {
@@ -52,7 +52,7 @@ history_element_t *history_oldest_element(logtop *this)
     }
 }
 
-history_element_t *history_newest_element(logtop *this)
+history_element_t *history_newest_element(struct logtop *this)
 {
     int           newest_item_index;
 
@@ -65,7 +65,7 @@ history_element_t *history_newest_element(logtop *this)
         return &(this->history[newest_item_index]);
 }
 
-void history_update(logtop *this, log_line_t *element)
+void history_update(struct logtop *this, log_line_t *element)
 {
     history_element_t *history_element;
     log_line_t        *log_entry;
@@ -81,12 +81,12 @@ void history_update(logtop *this, log_line_t *element)
         this->history_start = 0;
 }
 
-history_element_t *new_history(logtop *this)
+history_element_t *new_history(struct logtop *this)
 {
     return calloc(sizeof(history_element_t), this->history_size);
 }
 
-void delete_history(logtop *this)
+void delete_history(struct logtop *this)
 {
     free(this->history);
 }

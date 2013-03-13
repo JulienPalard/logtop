@@ -26,9 +26,9 @@
 #include <stdlib.h>
 #include "logtop.h"
 
-logtop *new_logtop(size_t history_size)
+struct logtop *new_logtop(size_t history_size)
 {
-    logtop *this;
+    struct logtop *this;
 
     this = malloc(sizeof(*this));
     if (this == NULL)
@@ -41,14 +41,14 @@ logtop *new_logtop(size_t history_size)
     return this;
 }
 
-void delete_logtop(logtop *this)
+void delete_logtop(struct logtop *this)
 {
     delete_history(this);
     delete_avl(this);
     free(this);
 }
 
-void logtop_feed(logtop *this, char *string)
+void logtop_feed(struct logtop *this, char *string)
 {
     log_line_t *element;
 
@@ -62,7 +62,7 @@ static void logtop_get_fill(void *data, int index, void *display_data)
     ((log_line_t **)display_data)[index - 1] = (log_line_t *)data;
 }
 
-log_line_t **logtop_get(logtop *this, size_t qte)
+log_line_t **logtop_get(struct logtop *this, size_t qte)
 {
     log_line_t **items;
 

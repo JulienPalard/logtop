@@ -68,7 +68,7 @@ static char *repr(const char *str)
     return clean;
 }
 
-static log_line_t *create_log_entry(logtop *this, char *string)
+static log_line_t *create_log_entry(struct logtop *this, char *string)
 {
     log_line_t *entry;
 
@@ -88,7 +88,7 @@ static log_line_t *create_log_entry(logtop *this, char *string)
     return entry;
 }
 
-static void delete_log_entry(logtop *this, log_line_t *log_entry)
+static void delete_log_entry(struct logtop *this, log_line_t *log_entry)
 {
     HASH_DEL(this->strings, log_entry);
     free(log_entry->string);
@@ -96,22 +96,22 @@ static void delete_log_entry(logtop *this, log_line_t *log_entry)
     free(log_entry);
 }
 
-struct avl_table     *new_avl(logtop *this)
+struct avl_table     *new_avl(struct logtop *this)
 {
     return avl_create(compare_log_lines_count, this, NULL);
 }
 
 static void free_avl_element(void *avl_item, void *avl_param)
 {
-    delete_log_entry((logtop *)avl_param, (log_line_t *)avl_item);
+    delete_log_entry((struct logtop*)avl_param, (log_line_t *)avl_item);
 }
 
-void delete_avl(logtop *this)
+void delete_avl(struct logtop *this)
 {
     avl_destroy(this->top, free_avl_element);
 }
 
-log_line_t *avl_get(logtop *this, char *string)
+log_line_t *avl_get(struct logtop *this, char *string)
 {
     log_line_t *node;
 
@@ -122,14 +122,14 @@ log_line_t *avl_get(logtop *this, char *string)
         return create_log_entry(this, string);
 }
 
-void avl_increment(logtop *this, log_line_t *log_entry)
+void avl_increment(struct logtop *this, log_line_t *log_entry)
 {
     avl_delete(this->top, log_entry);
     log_entry->count += 1;
     avl_insert(this->top, log_entry);
 }
 
-void avl_decrement(logtop *this, log_line_t *log_entry)
+void avl_decrement(struct logtop *this, log_line_t *log_entry)
 {
     avl_delete(this->top, log_entry);
     log_entry->count -= 1;
@@ -139,7 +139,7 @@ void avl_decrement(logtop *this, log_line_t *log_entry)
         delete_log_entry(this, log_entry);
 }
 
-void avl_traverse(logtop *logtop, unsigned int length,
+void avl_traverse(struct logtop*logtop, unsigned int length,
                   void (*visitor)(void *data, int index, void *user_data),
                   void *user_data)
 {

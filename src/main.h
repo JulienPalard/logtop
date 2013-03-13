@@ -46,7 +46,7 @@ typedef struct        s_env
     unsigned int      display_height;
     time_t            last_update_time;
     time_t            interval;
-    logtop            *logtop;
+    struct logtop     *logtop;
 }                     env_t;
 
 extern env_t gl_env;
