@@ -75,5 +75,6 @@ struct logtop*new_logtop(size_t history_size);
 void delete_logtop(struct logtop *this);
 void logtop_feed(struct logtop *this, char *line);
 log_line_t **logtop_get(struct logtop *this, size_t qte);
-
+double logtop_timespan(struct logtop *this);
+unsigned int logtop_qte_of_elements(struct logtop *this);
 #endif

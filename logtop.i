@@ -12,10 +12,9 @@
     $result = PyList_New(0);
     while (result[i] != NULL)
     {
-        log_line = PyTuple_New(3);
+        log_line = PyTuple_New(2);
         PyTuple_SetItem(log_line, 0, PyString_FromString(result[i]->string));
-        PyTuple_SetItem(log_line, 1, PyString_FromString(result[i]->repr));
-        PyTuple_SetItem(log_line, 2, PyInt_FromLong(result[i]->count));
+        PyTuple_SetItem(log_line, 1, PyInt_FromLong(result[i]->count));
         PyList_Append($result, log_line);
         i++;
     }
@@ -28,5 +27,7 @@ struct logtop
         ~logtop();
         void feed(char *line);
         log_line_t **get(size_t qte);
+        double timespan();
+        unsigned int qte_of_elements();
     }
 };

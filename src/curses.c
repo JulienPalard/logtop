@@ -105,16 +105,11 @@ static void display_header(struct display_data *display_data)
 void curses_update()
 {
     struct display_data display_data;
-    history_element_t  *oldest_element;
-    history_element_t  *newest_element;
 
-    display_data.duration = 0;
-    oldest_element = history_oldest_element(gl_env.logtop);
-    newest_element = history_newest_element(gl_env.logtop);
-    if (oldest_element != NULL && newest_element != NULL)
-        display_data.duration = difftime(newest_element->time,
-                                         oldest_element->time);
-    display_data.qte_of_elements = history_length(gl_env.logtop);
+    display_data.duration = logtop_timespan(gl_env.logtop);
+    display_data.qte_of_elements = logtop_qte_of_elements(gl_env.logtop);
+    if (display_data.duration == 0)
+        display_data.duration = 1;
     werase(window);
     display_header(&display_data);
     avl_traverse(gl_env.logtop, gl_env.display_height - 2,

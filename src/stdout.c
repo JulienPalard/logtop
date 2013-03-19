@@ -73,17 +73,12 @@ static const result_printer printers[2] = {display_line,
 
 void stdout_update(int nb_results, int line_by_line)
 {
-    history_element_t   *oldest_element;
-    history_element_t   *newest_element;
     struct display_data display_data;
 
-    display_data.duration = 1;
-    oldest_element = history_oldest_element(gl_env.logtop);
-    newest_element = history_newest_element(gl_env.logtop);
-    if (oldest_element != NULL && newest_element != NULL)
-        display_data.duration = difftime(newest_element->time,
-                                         oldest_element->time);
-    display_data.qte_of_elements = history_length(gl_env.logtop);
+    display_data.duration = logtop_timespan(gl_env.logtop);
+    display_data.qte_of_elements = logtop_qte_of_elements(gl_env.logtop);
+    if (display_data.duration == 0)
+        display_data.duration = 1;
     if (line_by_line)
     {
         avl_traverse(gl_env.logtop, nb_results,
