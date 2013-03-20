@@ -52,7 +52,7 @@ all:
 clean:
 		$(RM) $(NAME) src/*~ src/#*# src/*.o src/*.core \
 				src/libavl/*.o _logtop.so liblogtop.so \
-				logtop.py build/ logtop_wrap.c
+				logtop.py *.pyc build/ logtop_wrap.c
 
 re:		clean all
 
