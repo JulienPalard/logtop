@@ -45,6 +45,7 @@ struct logtop_state
 {
     double       timespan;
     unsigned int count;
+    double       frequency;
     log_line_t   **lines;
 };
 

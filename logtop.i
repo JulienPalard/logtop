@@ -24,6 +24,7 @@
     PyDict_SetItemString($result, "lines", lines);
     PyDict_SetItemString($result, "count", PyInt_FromLong(result->count));
     PyDict_SetItemString($result, "timespan", PyFloat_FromDouble(result->timespan));
+    PyDict_SetItemString($result, "frequency", PyFloat_FromDouble(result->frequency));
     free(result->lines);
     free(result);
 }

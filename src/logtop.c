@@ -80,6 +80,9 @@ struct logtop_state *logtop_get(struct logtop *this, size_t qte)
         goto fail_lines;
     state->timespan = logtop_timespan(this);
     state->count = history_length(this);
+    state->frequency = (state->timespan != 0)
+        ? state->count / state->timespan
+        : HUGE_VAL;
     avl_traverse(this, qte, (void (*)(void*, int, void*))logtop_get_fill,
                  state);
     return state;
