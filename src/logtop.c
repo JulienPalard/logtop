@@ -24,6 +24,7 @@
  */
 
 #include <stdlib.h>
+#include <math.h>
 #include "logtop.h"
 
 struct logtop *new_logtop(size_t history_size)
@@ -57,18 +58,35 @@ void logtop_feed(struct logtop *this, char *string)
     history_update(this, element);
 }
 
-static void logtop_get_fill(void *data, int index, void *display_data)
+static void logtop_get_fill(log_line_t *line, int index,
+                            struct logtop_state *state)
 {
-    ((log_line_t **)display_data)[index - 1] = (log_line_t *)data;
+    state->lines[index - 1] = line;
+    if (state->timespan != 0)
+        line->frequency = line->count / state->timespan;
+    else
+        line->frequency = HUGE_VAL;
 }
 
-log_line_t **logtop_get(struct logtop *this, size_t qte)
+struct logtop_state *logtop_get(struct logtop *this, size_t qte)
 {
-    log_line_t **items;
+    struct logtop_state *state;
 
-    items = calloc(qte + 1, sizeof(*items));
-    avl_traverse(this, qte, logtop_get_fill, items);
-    return items;
+    state = malloc(sizeof(*state));
+    if (state == NULL)
+        goto fail_state;
+    state->lines = calloc(qte + 1, sizeof(*state->lines));
+    if (state->lines == NULL)
+        goto fail_lines;
+    state->timespan = logtop_timespan(this);
+    state->count = history_length(this);
+    avl_traverse(this, qte, (void (*)(void*, int, void*))logtop_get_fill,
+                 state);
+    return state;
+fail_lines:
+    free(state);
+fail_state:
+    return NULL;
 }
 
 double logtop_timespan(struct logtop *this)

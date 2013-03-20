@@ -37,8 +37,16 @@ typedef struct     s_log_line
     char           *string;
     char           *repr;
     unsigned int   count;
+    double         frequency; /* Not live, updated lazily in logto_get */
     UT_hash_handle hh;
 }                  log_line_t;
+
+struct logtop_state
+{
+    double       timespan;
+    unsigned int count;
+    log_line_t   **lines;
+};
 
 typedef struct s_history_element
 {
@@ -74,7 +82,7 @@ void avl_traverse(struct logtop *this, unsigned int length,
 struct logtop*new_logtop(size_t history_size);
 void delete_logtop(struct logtop *this);
 void logtop_feed(struct logtop *this, char *line);
-log_line_t **logtop_get(struct logtop *this, size_t qte);
+struct logtop_state *logtop_get(struct logtop *this, size_t qte);
 double logtop_timespan(struct logtop *this);
 unsigned int logtop_qte_of_elements(struct logtop *this);
 #endif

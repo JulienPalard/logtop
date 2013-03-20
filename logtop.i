@@ -4,20 +4,28 @@
 #include "src/logtop.h"
 %}
 
-%typemap(out) log_line_t **
+%typemap(out) struct logtop_state *
 {
     int i;
     PyObject *log_line;
+    PyObject *lines;
 
-    $result = PyList_New(0);
-    while (result[i] != NULL)
+    $result = PyDict_New();
+    lines = PyList_New(0);
+    while (result->lines[i] != NULL)
     {
-        log_line = PyTuple_New(2);
-        PyTuple_SetItem(log_line, 0, PyString_FromString(result[i]->string));
-        PyTuple_SetItem(log_line, 1, PyInt_FromLong(result[i]->count));
-        PyList_Append($result, log_line);
+        log_line = PyTuple_New(3);
+        PyTuple_SetItem(log_line, 0, PyInt_FromLong(result->lines[i]->count));
+        PyTuple_SetItem(log_line, 1, PyFloat_FromDouble(result->lines[i]->frequency));
+        PyTuple_SetItem(log_line, 2, PyString_FromString(result->lines[i]->string));
+        PyList_Append(lines, log_line);
         i++;
     }
+    PyDict_SetItemString($result, "lines", lines);
+    PyDict_SetItemString($result, "count", PyInt_FromLong(result->count));
+    PyDict_SetItemString($result, "timespan", PyFloat_FromDouble(result->timespan));
+    free(result->lines);
+    free(result);
 }
 
 struct logtop
@@ -26,7 +34,7 @@ struct logtop
         logtop(size_t history_size);
         ~logtop();
         void feed(char *line);
-        log_line_t **get(size_t qte);
+        struct logtop_state *get(size_t qte);
         double timespan();
         unsigned int qte_of_elements();
     }
