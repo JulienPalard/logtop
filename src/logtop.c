@@ -74,12 +74,10 @@ log_line_t **logtop_get(struct logtop *this, size_t qte)
 double logtop_timespan(struct logtop *this)
 {
     history_element_t   *oldest_element;
-    history_element_t   *newest_element;
 
     oldest_element = history_oldest_element(this);
-    newest_element = history_newest_element(this);
-    if (oldest_element != NULL && newest_element != NULL)
-        return difftime(newest_element->time, oldest_element->time);
+    if (oldest_element != NULL)
+        return difftime(time(NULL), oldest_element->time);
     else
         return 0;
 }
