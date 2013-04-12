@@ -19,6 +19,15 @@ Run :
     $ aptitude install libncurses5
     $ ./logtop
 
+Python module compile dependencies :
+    You will need :
+    $ aptitude install python-dev swig
+
+    Then, to compile :
+    $ make python-module
+    $ python setup.py install
+
+
 Usage :
   logtop displays real-time count of strings recieved in standard input.
   I's useful for some cases, like getting the IP flooding your server :
