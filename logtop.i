@@ -9,6 +9,7 @@
     int i;
     PyObject *log_line;
     PyObject *lines;
+    PyObject *tmp;
 
     $result = PyDict_New();
     lines = PyList_New(0);
@@ -19,12 +20,20 @@
         PyTuple_SetItem(log_line, 1, PyFloat_FromDouble(result->lines[i]->frequency));
         PyTuple_SetItem(log_line, 2, PyString_FromString(result->lines[i]->string));
         PyList_Append(lines, log_line);
+        Py_DECREF(log_line);
         i++;
     }
     PyDict_SetItemString($result, "lines", lines);
-    PyDict_SetItemString($result, "count", PyInt_FromLong(result->count));
-    PyDict_SetItemString($result, "timespan", PyFloat_FromDouble(result->timespan));
-    PyDict_SetItemString($result, "frequency", PyFloat_FromDouble(result->frequency));
+    Py_DECREF(lines);
+    tmp = PyInt_FromLong(result->count);
+    PyDict_SetItemString($result, "count", tmp);
+    Py_DECREF(tmp);
+    tmp = PyFloat_FromDouble(result->timespan);
+    PyDict_SetItemString($result, "timespan", tmp);
+    Py_DECREF(tmp);
+    tmp = PyFloat_FromDouble(result->frequency);
+    PyDict_SetItemString($result, "frequency", tmp);
+    Py_DECREF(tmp);
     free(result->lines);
     free(result);
 }

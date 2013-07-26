@@ -16,7 +16,7 @@ logtop_module = Extension('_logtop',
                            )
 
 setup (name = 'logtop',
-       version = '0.1',
+       version = '0.2',
        author      = "Julien Palard",
        description = """Live line frequency analyzer""",
        ext_modules = [logtop_module],

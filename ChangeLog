@@ -1,3 +1,63 @@
+2013-07-26 09:57:55 +0200 Julien Palard <julien@palard.fr>
+
+	* FIX: Memory leak in python binding
+
+2013-04-12 11:23:33 +0200 Julien Palard <julien@palard.fr>
+
+	* Adding some doc about python module dependencies
+
+2013-03-20 11:36:33 +0100 Julien Palard <julien@palard.fr>
+
+	* NEW: Give also global frequency to python module
+
+2013-03-20 11:30:08 +0100 Julien Palard <julien@palard.fr>
+
+	* NEW: Give frequency of every lines to python module
+
+2013-03-20 10:01:36 +0100 Julien Palard <julien@palard.fr>
+
+	* FIX: Continue to increment time when no new lines are fed
+
+2013-03-20 09:54:29 +0100 Julien Palard <julien@palard.fr>
+
+	* Cleaning .pyc files
+
+2013-03-20 09:54:21 +0100 Julien Palard <julien@palard.fr>
+
+	* Adding a test file for python module
+
+2013-03-19 18:43:40 +0100 Julien Palard <julien@palard.fr>
+
+	* Do not give simplified representation of the string to python, seems useless.
+
+2013-03-14 00:28:52 +0100 Julien Palard <julien@palard.fr>
+
+	* Adding python module via swig
+
+2013-03-14 00:25:40 +0100 Julien Palard <julien@palard.fr>
+
+	* Simplier to use a struct for swig
+
+2013-03-13 23:37:58 +0100 Julien Palard <julien@palard.fr>
+
+	* Adding a logtop_get function
+
+2013-03-13 23:11:18 +0100 Julien Palard <julien@palard.fr>
+
+	* Provide a logtop_delete function, renames for consistency
+
+2013-03-13 19:11:18 +0100 Julien Palard <julien@palard.fr>
+
+	* Renaming frequency -> logtop, more consistent
+
+2013-03-13 19:06:24 +0100 Julien Palard <julien@palard.fr>
+
+	* Renaming logtop -> main (see next commit)
+
+2013-03-13 18:34:34 +0100 Julien Palard <julien@palard.fr>
+
+	* Splitting code, first step to provide a lib_logtop.
+
 2012-11-17 23:48:35 +0100 Julien Palard <julien@palard.fr>
 
 	* UPDATE: Display improvment
