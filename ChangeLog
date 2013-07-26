@@ -1,3 +1,7 @@
+2013-07-26 10:07:37 +0200 Julien Palard <julien@palard.fr>
+
+	* Version from Makefile
+
 2013-07-26 09:57:55 +0200 Julien Palard <julien@palard.fr>
 
 	* FIX: Memory leak in python binding

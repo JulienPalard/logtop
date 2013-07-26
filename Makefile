@@ -5,7 +5,7 @@
 ## Login   <logtop@mandark.fr>
 ##
 
-VERSION = 0.6
+VERSION = 0.6.1
 MINOR = 0
 RELEASE = 0
 
@@ -24,7 +24,7 @@ OBJ = $(SRC:.c=.o)
 CC = gcc
 INCLUDE = .
 LIB = -lncurses #-lefence
-CFLAGS = -O3 -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
+CFLAGS = -O3 -DVERSION=$(VERSION) -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
 RM = rm -fr
 LDFLAGS =
 

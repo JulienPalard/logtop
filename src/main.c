@@ -114,7 +114,9 @@ static void usage_and_exit(int exit_code)
 
 static void version_and_exit(void)
 {
-    fprintf(stdout, "logtop v0.2.2\n");
+#define stringify(v) #v
+#define concat_version(v) "logtop v" stringify(v) "\n"
+    fprintf(stdout, concat_version(VERSION));
     exit(EXIT_SUCCESS);
 }
 
