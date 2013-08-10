@@ -80,11 +80,12 @@ void avl_traverse(struct logtop *this, unsigned int length,
                   void (*visitor)(void *data, int index, void *user_data),
                   void *user_data);
 
-struct logtop*new_logtop(size_t history_size);
+struct logtop *new_logtop(size_t history_size);
 void delete_logtop(struct logtop *this);
 void logtop_feed(struct logtop *this, char *line);
 struct logtop_state *logtop_get(struct logtop *this, size_t qte);
 void delete_logtop_state(struct logtop_state *this);
 double logtop_timespan(struct logtop *this);
 unsigned int logtop_qte_of_elements(struct logtop *this);
+
 #endif
