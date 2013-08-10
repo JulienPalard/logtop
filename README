@@ -59,6 +59,19 @@ C API :
 
   You can find an example of using the C API in examples/example1.c
 
+Python API :
+  logtop module exposes a logtop class containing :
+    logtop.__init__(history_size) to build a new logtop keeping
+                                  at most history_size lines.
+    logtop.feed(line) to feed a new line in logtop.
+    logtop.get(qte_of_elements) to get the top qte_of_elements lines.
+    logtop.qte_of_elements() to get the current total number of lines.
+    logtop.timespan() to get the duration from the oldest line to now.
+
+  timespan may be less than the runtime, as logtop drop old lines,
+  to keep, at most, history_size lines, given in the constructor of
+  the logtop class.
+
 About libavl:
   The libavl used here is the Ben Pfaff's one, statically build with logtop, as
   Ben want it to be (see INSTALL file and here :
