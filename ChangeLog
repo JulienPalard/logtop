@@ -1,3 +1,7 @@
+2013-08-10 17:43:32 +0200 Julien Palard <julien@eeple.fr>
+
+	* FIX: Makefile to build liblogtop.
+
 2013-07-26 10:07:37 +0200 Julien Palard <julien@palard.fr>
 
 	* Version from Makefile

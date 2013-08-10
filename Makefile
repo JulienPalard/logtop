@@ -14,9 +14,9 @@ LINKERNAME = lib$(NAME).so
 SONAME=$(LINKERNAME).$(VERSION)
 REALNAME=$(SONAME).$(MINOR).$(RELEASE)
 
-LIB_SRC = src/avl.c src/history.c src/curses.c \
-          src/stdout.c src/logtop.c src/libavl/avl.c
-SRC = $(LIB_SRC) src/main.c
+LIB_SRC = src/avl.c src/history.c \
+          src/logtop.c src/libavl/avl.c
+SRC = $(LIB_SRC) src/curses.c src/stdout.c src/main.c
 
 LIB_OBJ = $(LIB_SRC:.c=.o)
 OBJ = $(SRC:.c=.o)
@@ -32,7 +32,7 @@ $(NAME):	$(OBJ)
 		$(CC) -o $(NAME) $(OBJ) $(LIB) $(LDFLAGS)
 
 lib$(NAME): $(LIB_OBJ)
-		$(CC) --shared -o $(LINKERNAME) $(OBJ) $(LIB) $(LDFLAGS)
+		$(CC) --shared -o $(LINKERNAME) $(LIB_OBJ) $(LDFLAGS)
 
 install:	$(NAME)
 		mkdir -p $(DESTDIR)/usr/bin/
