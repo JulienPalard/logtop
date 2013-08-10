@@ -42,6 +42,23 @@ Development :
   so I can fetch by string or fetch ordered by frequency to display the
   top-strings.
 
+C API :
+
+  Logtop can be used by your C programs, you may to compile against
+  logtop's sources (src/{avl.c,history.c,logtop.c,libavl/avl.c}) or
+  against liblogtop, obtained using 'make liblogtop`.
+
+  C API is exposed in logtop.h, you need :
+
+  - struct logtop *new_logtop(size_t history_size);
+  - void delete_logtop(struct logtop *this);
+  - void logtop_feed(struct logtop *this, char *line);
+  - struct logtop_state *logtop_get(struct logtop *this, size_t qte);
+  - double logtop_timespan(struct logtop *this);
+  - unsigned int logtop_qte_of_elements(struct logtop *this);
+
+  You can find an example of using the C API in examples/example1.c
+
 About libavl:
   The libavl used here is the Ben Pfaff's one, statically build with logtop, as
   Ben want it to be (see INSTALL file and here :
