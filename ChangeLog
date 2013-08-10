@@ -1,3 +1,7 @@
+2013-08-10 17:44:01 +0200 Julien Palard <julien@eeple.fr>
+
+	* NEW: delete_logtop_state
+
 2013-08-10 17:43:32 +0200 Julien Palard <julien@eeple.fr>
 
 	* FIX: Makefile to build liblogtop.

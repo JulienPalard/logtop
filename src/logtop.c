@@ -92,6 +92,12 @@ fail_state:
     return NULL;
 }
 
+void delete_logtop_state(struct logtop_state *this)
+{
+    free(this->lines);
+    free(this);
+}
+
 double logtop_timespan(struct logtop *this)
 {
     history_element_t   *oldest_element;

@@ -34,8 +34,7 @@
     tmp = PyFloat_FromDouble(result->frequency);
     PyDict_SetItemString($result, "frequency", tmp);
     Py_DECREF(tmp);
-    free(result->lines);
-    free(result);
+    delete_logtop_state(result);
 }
 
 struct logtop
