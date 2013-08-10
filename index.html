@@ -40,31 +40,36 @@
 
 <p>Logtop is a very basic yet powerfull live log (or any text) analyzer.</p>
 
-<p>How does it looks ?</p>
+<h3>How does it looks ?</h3>
 Here is a screenshot of:
 <pre><code>$ tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
 <img src="images/logtop.png" alt="logtop screenshot"/>
 
-<p>What does logtop do ?</p>
+<h3>What does logtop do ?</h3>
 
 <ul>
 <li>Display live results like top.</li>
 <li>Display line rank, frequency, count, and the actual line.</li>
 <li>Exposes an API for C and Python if you want to run it headless.</li>
-</ul><p>What logtop does not do ?</p>
+</ul>
+
+<h3>What logtop does not do ?</h3>
 
 <ul>
-<li>Eat all your CPU and RAM : logtop is designed to run in production server without impacting them.</li>
-<li>Understand or parse your log format, use cut or awk for this.</li>
-<li>Open your log files, use tail -f (or -F) for this.</li>
-</ul><h2>
-<a name="installation-on-distro-using-dpkg" class="anchor" href="#installation-on-distro-using-dpkg"><span class="octicon octicon-link"></span></a>Installation on distro using dpkg</h2>
+    <li>Eat all your CPU and RAM : logtop is designed to run in production server without impacting them.</li>
+    <li>Understand or parse your log format, use cut or awk for this.</li>
+    <li>Open your log files, use tail -f (or -F) for this.</li>
+</ul>
 
-<pre><code>$ apt-get install logtop
-</code></pre>
+<h3>
+    <a name="installation-on-distro-using-dpkg" class="anchor" href="#installation-on-distro-using-dpkg"><span class="octicon octicon-link"></span></a>Installation on distro using dpkg
+</h3>
 
-<h2>
-<a name="installation-on-other-distro" class="anchor" href="#installation-on-other-distro"><span class="octicon octicon-link"></span></a>Installation on other distro</h2>
+<pre><code>$ apt-get install logtop</code></pre>
+
+<h3>
+    <a name="installation-on-other-distro" class="anchor" href="#installation-on-other-distro"><span class="octicon octicon-link"></span></a>Installation on other distro
+</h3>
 
 <pre><code>$ git clone https://github.com/JulienPalard/logtop.git
 $ cd logtop
@@ -72,8 +77,9 @@ $ // Install dependencies : libncurses5-dev uthash-dev
 $ make &amp;&amp; make install # not war
 </code></pre>
 
-<h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<h3>
+    <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage
+</h3>
 
 <p>You have to tail and parse your log lines, logtop will count what your giving to him and compute their frequency.</p>
 
@@ -98,6 +104,51 @@ $ make &amp;&amp; make install # not war
 
 <pre><code>tail -f access.log | cut -d' ' -f12- | logtop
 </code></pre>
+
+<h3>C API</h3>
+
+<p>
+Logtop can be used by your C programs, you may to compile against
+logtop's sources (src/{avl.c,history.c,logtop.c,libavl/avl.c}) or
+against liblogtop, obtained using 'make liblogtop`.
+</p>
+
+<p>C API is exposed in <a href="https://github.com/JulienPalard/logtop/blob/master/src/logtop.h">src/logtop.h</a>, you need :</p>
+
+<ul>
+    <li>struct logtop *new_logtop(size_t history_size)</li>
+    <li>void delete_logtop(struct logtop *this)</li>
+    <li>void logtop_feed(struct logtop *this, char *line)</li>
+    <li>struct logtop_state *logtop_get(struct logtop *this, size_t qte)</li>
+    <li>double logtop_timespan(struct logtop *this)</li>
+    <li>unsigned int logtop_qte_of_elements(struct logtop *this)</li>
+</ul>
+
+<p>You can find an example of using the C API in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.c">examples/example1.c</a></p>
+
+<h3>Python API</h3>
+<p>
+  You should read the pydoc of the python module, but in short logtop
+  module exposes a logtop class containing :
+</p>
+<ul>
+    <li>logtop.__init__(history_size) to build a new logtop keeping
+                                      at most history_size lines.</li>
+    <li>logtop.feed(line) to feed a new line in logtop.</li>
+    <li>logtop.get(qte_of_elements) to get the top qte_of_elements lines.</li>
+    <li>logtop.qte_of_elements() to get the current total number of lines.</li>
+    <li>logtop.timespan() to get the duration from the oldest line to now.</li>
+</ul>
+<p>
+  timespan may be less than the runtime, as logtop drop old lines,
+  to keep, at most, history_size lines, given in the constructor of
+  the logtop class.
+</p>
+<p>
+  An example can be found in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.py">examples/example1.py</a>
+</p>
+
+
         </section>
 
         <footer>
