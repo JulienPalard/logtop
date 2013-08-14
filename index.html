@@ -33,136 +33,100 @@
         <hr>
 
         <section id="main_content">
-          <h3>
-<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>INTRODUCTION</h3>
+          <h3>INTRODUCTION</h3>
+          <p>Tired to write 'tail -n 500 some.log | cut -d' ' -f1 | sort | uniq -c | sort -gr' ? You're on the right page !</p>
+          <p>tl;dr for Debian users :
+          <pre><code>aptitude install logtop; tail -f access.log | cut -d' ' -f7 | logtop</pre></code></p>
+          <p>Logtop is a very basic yet powerfull live log (or any text) analyzer.</p>
 
-<p>Tired to write 'tail -n 500 some.log | cut -d' ' -f1 | sort | uniq -c | sort -gr' ? You're on the right page !</p>
+          <h3>HOW DOES IT LOOKS ?</h3>
+          Here is a screenshot of:
+          <pre><code>$ tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
+          <img src="images/logtop.png" alt="logtop screenshot"/>
 
-<p>tl;dr for Debian users :
-<pre><code>aptitude install logtop; tail -f access.log | cut -d' ' -f7 | logtop</pre></code></p>
+          <h3>WHAT DOES LOGTOP DO ?</h3>
+          <ul>
+          <li>Display live results like top.</li>
+          <li>Display line rank, frequency, count, and the actual line.</li>
+          <li>Exposes an API for C and Python if you want to run it headless.</li>
+          </ul>
 
-<p>Logtop is a very basic yet powerfull live log (or any text) analyzer.</p>
+          <h3>WHAT LOGTOP DOES NOT DO ?</h3>
+          <ul>
+              <li>Eat all your CPU and RAM : logtop is designed to run in production server without impacting them.</li>
+              <li>Understand or parse your log format, use cut or awk for this.</li>
+              <li>Open your log files, use tail -f (or -F) for this.</li>
+          </ul>
 
-<h3>HOW DOES IT LOOKS ?</h3>
-Here is a screenshot of:
-<pre><code>$ tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
-<img src="images/logtop.png" alt="logtop screenshot"/>
+          <h3>INSTALLATION ON DISTRO USING DPKG</h3>
+          <pre><code>$ apt-get install logtop</code></pre>
 
-<h3>WHAT DOES LOGTOP DO ?</h3>
+          <h3>INSTALLATION ON OTHER DISTRO</h3>
 
-<ul>
-<li>Display live results like top.</li>
-<li>Display line rank, frequency, count, and the actual line.</li>
-<li>Exposes an API for C and Python if you want to run it headless.</li>
-</ul>
+          <pre><code>$ git clone https://github.com/JulienPalard/logtop.git
+          $ cd logtop
+          $ // Install dependencies : libncurses5-dev uthash-dev
+          $ make &amp;&amp; make install # not war
+          </code></pre>
 
-<h3>WHAT LOGTOP DOES NOT DO ?</h3>
+          <h3>USAGE</h3>
+          <p>You have to tail and parse your log lines, logtop will count what your giving to him and compute their frequency.</p>
+          <p>Let start with some easy examples, in the case you whant to test logtop against NCSA log format (used by apache, nginx, varnish, ...) :</p>
+          <p>Get IP requesting your server:</p>
+          <pre><code>tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
+          <p>Get URL's requested on your server:</p>
+          <pre><code>tail -f access.log | cut -d' ' -f7 | logtop </code></pre>
+          <p>Show status codes your server is replying:</p>
+          <pre><code>tail -f access.log | cut -d' ' -f9 | logtop </code></pre>
+          <p>Show user agents requesting your server:</p>
+          <pre><code>tail -f access.log | cut -d' ' -f12- | logtop </code></pre>
 
-<ul>
-    <li>Eat all your CPU and RAM : logtop is designed to run in production server without impacting them.</li>
-    <li>Understand or parse your log format, use cut or awk for this.</li>
-    <li>Open your log files, use tail -f (or -F) for this.</li>
-</ul>
+          <h3>C API</h3>
+          <p>
+          Logtop can be used by your C programs, you may to compile against
+          logtop's sources (src/{avl.c,history.c,logtop.c,libavl/avl.c}) or
+          against liblogtop, obtained using 'make liblogtop`.
+          </p>
+          <p>C API is exposed in <a href="https://github.com/JulienPalard/logtop/blob/master/src/logtop.h">src/logtop.h</a>, you need :</p>
+          <ul>
+              <li>struct logtop *new_logtop(size_t history_size)</li>
+              <li>void delete_logtop(struct logtop *this)</li>
+              <li>void logtop_feed(struct logtop *this, char *line)</li>
+              <li>struct logtop_state *logtop_get(struct logtop *this, size_t qte)</li>
+              <li>double logtop_timespan(struct logtop *this)</li>
+              <li>unsigned int logtop_qte_of_elements(struct logtop *this)</li>
+          </ul>
+          <p>You can find an example of using the C API in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.c">examples/example1.c</a></p>
 
-<h3>
-    <a name="installation-on-distro-using-dpkg" class="anchor" href="#installation-on-distro-using-dpkg"><span class="octicon octicon-link"></span></a>INSTALLATION ON DISTRO USING DPKG
-</h3>
-
-<pre><code>$ apt-get install logtop</code></pre>
-
-<h3>
-    <a name="installation-on-other-distro" class="anchor" href="#installation-on-other-distro"><span class="octicon octicon-link"></span></a>INSTALLATION ON OTHER DISTRO
-</h3>
-
-<pre><code>$ git clone https://github.com/JulienPalard/logtop.git
-$ cd logtop
-$ // Install dependencies : libncurses5-dev uthash-dev
-$ make &amp;&amp; make install # not war
-</code></pre>
-
-<h3>
-    <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>USAGE
-</h3>
-
-<p>You have to tail and parse your log lines, logtop will count what your giving to him and compute their frequency.</p>
-
-<p>Let start with some easy examples, in the case you whant to test logtop against NCSA log format (used by apache, nginx, varnish, ...) :</p>
-
-<p>Get IP requesting your server:</p>
-
-<pre><code>tail -f access.log | cut -d' ' -f1 | logtop
-</code></pre>
-
-<p>Get URL's requested on your server:</p>
-
-<pre><code>tail -f access.log | cut -d' ' -f7 | logtop
-</code></pre>
-
-<p>Show status codes your server is replying:</p>
-
-<pre><code>tail -f access.log | cut -d' ' -f9 | logtop
-</code></pre>
-
-<p>Show user agents requesting your server:</p>
-
-<pre><code>tail -f access.log | cut -d' ' -f12- | logtop
-</code></pre>
-
-<h3>C API</h3>
-
-<p>
-Logtop can be used by your C programs, you may to compile against
-logtop's sources (src/{avl.c,history.c,logtop.c,libavl/avl.c}) or
-against liblogtop, obtained using 'make liblogtop`.
-</p>
-
-<p>C API is exposed in <a href="https://github.com/JulienPalard/logtop/blob/master/src/logtop.h">src/logtop.h</a>, you need :</p>
-
-<ul>
-    <li>struct logtop *new_logtop(size_t history_size)</li>
-    <li>void delete_logtop(struct logtop *this)</li>
-    <li>void logtop_feed(struct logtop *this, char *line)</li>
-    <li>struct logtop_state *logtop_get(struct logtop *this, size_t qte)</li>
-    <li>double logtop_timespan(struct logtop *this)</li>
-    <li>unsigned int logtop_qte_of_elements(struct logtop *this)</li>
-</ul>
-
-<p>You can find an example of using the C API in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.c">examples/example1.c</a></p>
-
-<h3>PYTHON API</h3>
-<p>
-  You should read the pydoc of the python module, but in short logtop
-  module exposes a logtop class containing :
-</p>
-<ul>
-    <li>logtop.__init__(history_size) to build a new logtop keeping
-                                      at most history_size lines.</li>
-    <li>logtop.feed(line) to feed a new line in logtop.</li>
-    <li>logtop.get(qte_of_elements) to get the top qte_of_elements lines.</li>
-    <li>logtop.qte_of_elements() to get the current total number of lines.</li>
-    <li>logtop.timespan() to get the duration from the oldest line to now.</li>
-</ul>
-<p>
-  timespan may be less than the runtime, as logtop drop old lines,
-  to keep, at most, history_size lines, given in the constructor of
-  the logtop class.
-</p>
-<p>
-  An example can be found in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.py">examples/example1.py</a>
-</p>
-
-
+          <h3>PYTHON API</h3>
+          <p>
+            You should read the pydoc of the python module, but in short logtop
+            module exposes a logtop class containing :
+          </p>
+          <ul>
+              <li>logtop.__init__(history_size) to build a new logtop keeping
+                                                at most history_size lines.</li>
+              <li>logtop.feed(line) to feed a new line in logtop.</li>
+              <li>logtop.get(qte_of_elements) to get the top qte_of_elements lines.</li>
+              <li>logtop.qte_of_elements() to get the current total number of lines.</li>
+              <li>logtop.timespan() to get the duration from the oldest line to now.</li>
+          </ul>
+          <p>
+            timespan may be less than the runtime, as logtop drop old lines,
+            to keep, at most, history_size lines, given in the constructor of
+            the logtop class.
+          </p>
+          <p>
+            An example can be found in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.py">examples/example1.py</a>
+          </p>
         </section>
 
         <footer>
           Logtop is maintained by <a href="https://github.com/JulienPalard">JulienPalard</a><br>
           This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
         </footer>
-
-
       </div>
     </div>
-
-<script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-268798-10']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); </script>
+    <script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-268798-10']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); </script>
   </body>
 </html>
