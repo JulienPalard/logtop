@@ -71,6 +71,9 @@
 
           <h3>USAGE</h3>
           <p>You have to tail and parse your log lines, logtop will count what your giving to him and compute their frequency.</p>
+          <p>For the sake of readability I will use cut in examples. Beware that cut is buffering, so if your source is slow, logtop will get the data by bursts. You may prefer awk to explicitly flush each line like this :
+          <pre><code>tail -f access.log | awk '{print $9; fflush();}' | logtop</code></pre></p>
+
           <p>Let start with some easy examples, in the case you whant to test logtop against NCSA log format (used by apache, nginx, varnish, ...) :</p>
           <p>Get IP requesting your server:</p>
           <pre><code>tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
