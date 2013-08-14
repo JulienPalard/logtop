@@ -70,12 +70,12 @@
           </code></pre>
 
           <h3>USAGE</h3>
-          <p>You have to tail and parse your log lines, logtop will count what your giving to him and compute their frequency.</p>
-          <p>For the sake of readability I will use cut in examples. Beware that cut is buffering, so if your source is slow, logtop will get the data by bursts. You may prefer awk to explicitly flush each line like this :
+          <p>You have to tail and parse your log lines, logtop will count what you're giving to him and compute their frequency.</p>
+          <p>For the sake of readability I will use cut in examples. Beware that cut buffers, so if your source is slow, logtop will get the data by bursts. You may prefer awk to explicitly flush each line like this :
           <pre><code>tail -f access.log | awk '{print $9; fflush();}' | logtop</code></pre></p>
 
-          <p>Let start with some easy examples, in the case you whant to test logtop against NCSA log format (used by apache, nginx, varnish, ...) :</p>
-          <p>Get IP requesting your server:</p>
+          <p>Let start with some easy examples, in the case you want to test logtop with NCSA log format (used by apache, nginx, varnish, ...) :</p>
+          <p>Get IP's requesting your server:</p>
           <pre><code>tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
           <p>Get URL's requested on your server:</p>
           <pre><code>tail -f access.log | cut -d' ' -f7 | logtop </code></pre>
@@ -86,11 +86,11 @@
 
           <h3>C API</h3>
           <p>
-          Logtop can be used by your C programs, you may to compile against
+          Logtop can be used by your C programs, you may want to compile with
           logtop's sources (src/{avl.c,history.c,logtop.c,libavl/avl.c}) or
-          against liblogtop, obtained using 'make liblogtop`.
+          with liblogtop, obtained using 'make liblogtop`.
           </p>
-          <p>C API is exposed in <a href="https://github.com/JulienPalard/logtop/blob/master/src/logtop.h">src/logtop.h</a>, you need :</p>
+          <p>C API is exposed in <a href="https://github.com/JulienPalard/logtop/blob/master/src/logtop.h">src/logtop.h</a>. In short, you may need :</p>
           <ul>
               <li>struct logtop *new_logtop(size_t history_size)</li>
               <li>void delete_logtop(struct logtop *this)</li>
@@ -99,7 +99,7 @@
               <li>double logtop_timespan(struct logtop *this)</li>
               <li>unsigned int logtop_qte_of_elements(struct logtop *this)</li>
           </ul>
-          <p>You can find an example of using the C API in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.c">examples/example1.c</a></p>
+          <p>You can find an example the C API in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.c">examples/example1.c</a></p>
 
           <h3>PYTHON API</h3>
           <p>
@@ -115,8 +115,8 @@
               <li>logtop.timespan() to get the duration from the oldest line to now.</li>
           </ul>
           <p>
-            timespan may be less than the runtime, as logtop drop old lines,
-            to keep, at most, history_size lines, given in the constructor of
+            timespan may be less than the runtime as logtop drop old lines
+            to keep at most history_size lines, given in the constructor of
             the logtop class.
           </p>
           <p>
