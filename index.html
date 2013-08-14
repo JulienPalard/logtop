@@ -3,7 +3,9 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
@@ -32,7 +34,7 @@
 
         <section id="main_content">
           <h3>
-<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h3>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>INTRODUCTION</h3>
 
 <p>Tired to write 'tail -n 500 some.log | cut -d' ' -f1 | sort | uniq -c | sort -gr' ? You're on the right page !</p>
 
@@ -40,12 +42,12 @@
 
 <p>Logtop is a very basic yet powerfull live log (or any text) analyzer.</p>
 
-<h3>How does it looks ?</h3>
+<h3>HOW DOES IT LOOKS ?</h3>
 Here is a screenshot of:
 <pre><code>$ tail -f access.log | cut -d' ' -f1 | logtop </code></pre>
 <img src="images/logtop.png" alt="logtop screenshot"/>
 
-<h3>What does logtop do ?</h3>
+<h3>WHAT DOES LOGTOP DO ?</h3>
 
 <ul>
 <li>Display live results like top.</li>
@@ -53,7 +55,7 @@ Here is a screenshot of:
 <li>Exposes an API for C and Python if you want to run it headless.</li>
 </ul>
 
-<h3>What logtop does not do ?</h3>
+<h3>WHAT LOGTOP DOES NOT DO ?</h3>
 
 <ul>
     <li>Eat all your CPU and RAM : logtop is designed to run in production server without impacting them.</li>
@@ -62,13 +64,13 @@ Here is a screenshot of:
 </ul>
 
 <h3>
-    <a name="installation-on-distro-using-dpkg" class="anchor" href="#installation-on-distro-using-dpkg"><span class="octicon octicon-link"></span></a>Installation on distro using dpkg
+    <a name="installation-on-distro-using-dpkg" class="anchor" href="#installation-on-distro-using-dpkg"><span class="octicon octicon-link"></span></a>INSTALLATION ON DISTRO USING DPKG
 </h3>
 
 <pre><code>$ apt-get install logtop</code></pre>
 
 <h3>
-    <a name="installation-on-other-distro" class="anchor" href="#installation-on-other-distro"><span class="octicon octicon-link"></span></a>Installation on other distro
+    <a name="installation-on-other-distro" class="anchor" href="#installation-on-other-distro"><span class="octicon octicon-link"></span></a>INSTALLATION ON OTHER DISTRO
 </h3>
 
 <pre><code>$ git clone https://github.com/JulienPalard/logtop.git
@@ -78,7 +80,7 @@ $ make &amp;&amp; make install # not war
 </code></pre>
 
 <h3>
-    <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage
+    <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>USAGE
 </h3>
 
 <p>You have to tail and parse your log lines, logtop will count what your giving to him and compute their frequency.</p>
@@ -126,7 +128,7 @@ against liblogtop, obtained using 'make liblogtop`.
 
 <p>You can find an example of using the C API in <a href="https://github.com/JulienPalard/logtop/blob/master/examples/example1.c">examples/example1.c</a></p>
 
-<h3>Python API</h3>
+<h3>PYTHON API</h3>
 <p>
   You should read the pydoc of the python module, but in short logtop
   module exposes a logtop class containing :

@@ -253,11 +253,13 @@ h2 {
 
 h3 {
   color: #d5000d;
-  font-size: 18px;
+  font-size: 26px;
   font-weight: bold;
   margin-bottom: 8px;
-} 
- 
+  margin-top: 42px;
+  font-family: 'Roboto', sans-serif;
+}
+
 h4 {
   font-size: 16px;
   color: #303030;
@@ -275,6 +277,7 @@ h6 {
 } 
 
 p {
+  font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   margin-bottom: 20px;
 }
