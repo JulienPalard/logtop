@@ -29,7 +29,7 @@ Python module compile dependencies :
 
 
 Usage :
-  logtop displays real-time count of strings recieved in standard input.
+  logtop displays real-time count of strings received in standard input.
   I's useful for some cases, like getting the IP flooding your server :
   $ tail -f /var/log/apache2/access.log | cut -d' ' -f1 | logtop
 
