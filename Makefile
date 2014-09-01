@@ -27,7 +27,7 @@ LIB_OBJ = $(LIB_SRC:.c=.o)
 OBJ = $(SRC:.c=.o)
 
 CC = gcc
-INCLUDE = .
+override INCLUDE += .
 LIB = -lncurses #-lefence
 CFLAGS = -O3 -DVERSION=$(VERSION) -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
 RM = rm -fr
