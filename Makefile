@@ -10,7 +10,12 @@ MINOR = 0
 RELEASE = 0
 
 NAME = logtop
-LINKERNAME = lib$(NAME).so
+UNAME=$(shell uname -s)
+ifeq ($(UNAME),Darwin)
+  LINKERNAME = lib$(NAME).dylib
+else
+  LINKERNAME = lib$(NAME).so
+endif
 SONAME=$(LINKERNAME).$(VERSION)
 REALNAME=$(SONAME).$(MINOR).$(RELEASE)
 
@@ -22,7 +27,7 @@ LIB_OBJ = $(LIB_SRC:.c=.o)
 OBJ = $(SRC:.c=.o)
 
 CC = gcc
-INCLUDE = .
+override INCLUDE += .
 LIB = -lncurses #-lefence
 CFLAGS = -O3 -DVERSION=$(VERSION) -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
 RM = rm -fr
@@ -51,7 +56,7 @@ all:
 
 clean:
 		$(RM) $(NAME) src/*~ src/#*# src/*.o src/*.core \
-				src/libavl/*.o _logtop.so liblogtop.so \
+				src/libavl/*.o _logtop.* liblogtop.* \
 				logtop.py *.pyc build/ logtop_wrap.c
 
 re:		clean all

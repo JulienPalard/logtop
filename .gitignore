@@ -1,0 +1,5 @@
+examples/example1
+liblogtop.*
+logtop
+src/*.o
+src/libavl/*.o
