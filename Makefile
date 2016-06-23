@@ -47,6 +47,10 @@ python-module:
 		swig -python *.i
 		python ./setup.py build_ext --inplace
 
+python3-module:
+		swig -python *.i
+		python3 ./setup.py build_ext --inplace
+
 all:
 		@make $(NAME)
 		@make lib$(NAME)
