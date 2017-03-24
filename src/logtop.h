@@ -27,10 +27,10 @@
 #define __FREQUENCY_H__
 
 #include <time.h>
-#include <uthash.h>
 
 #include "libavl/avl.h"
 #include "logtop.h"
+#include "uthash.h"
 
 typedef struct     s_log_line
 {
