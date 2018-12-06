@@ -28,8 +28,8 @@ OBJ = $(SRC:.c=.o)
 
 CC = gcc
 override INCLUDE += .
-LIB = -lncurses #-lefence
-CFLAGS = -O3 -DVERSION=$(VERSION) -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I$(INCLUDE)
+LIB = $(shell pkg-config --libs ncursesw)  #-lefence
+CFLAGS += -O3 -Wall -fPIC -Wextra -pedantic -Wstrict-prototypes -I$(INCLUDE) $(shell pkg-config --cflags ncursesw)
 RM = rm -fr
 LDFLAGS =
 
@@ -37,7 +37,7 @@ $(NAME):	$(OBJ)
 		$(CC) -o $(NAME) $(OBJ) $(LIB) $(LDFLAGS)
 
 lib$(NAME): $(LIB_OBJ)
-		$(CC) --shared -o $(LINKERNAME) $(LIB_OBJ) $(LDFLAGS)
+		$(CC) $(CFLAGS) --shared -o $(LINKERNAME) $(OBJ) $(LIB) $(LDFLAGS)
 
 install:	$(NAME)
 		mkdir -p $(DESTDIR)/usr/bin/

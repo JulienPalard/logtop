@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <getopt.h>
+#include <locale.h>
 #include "main.h"
 
 env_t gl_env;
@@ -194,6 +195,7 @@ static void on_sigint(int sig)
 
 int main(int ac, char **av)
 {
+    setlocale(LC_ALL, "");
     parse_args(ac, av);
     setup_sighandler(SIGINT, 0, on_sigint);
     setup_sighandler(SIGALRM, SA_RESTART, update_display);
