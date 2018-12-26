@@ -63,7 +63,7 @@ static char *repr(const char *str)
     if (clean == NULL)
         return NULL;
     for (i = 0; clean[i] != '\0'; ++i)
-        if (clean[i] < ' ' || clean[i] > '~')
+        if (clean[i] > 0 && clean[i] < ' ')
             clean[i] = '.';
     return clean;
 }
