@@ -26,7 +26,7 @@ Reading package lists... Done
 [...skipped for readability...]
 Processing triggers for man-db (2.8.2-1) ...
 $ make
-gcc -c -O3 -DVERSION=0.6.1 -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I. src/avl.c -o src/avl.o
+gcc -c -O3 -DVERSION=0.7.0 -Wall -fPIC -Wextra -ansi -pedantic -Wstrict-prototypes -I. src/avl.c -o src/avl.o
 [...skipped for readability...]
 $ make install
 ```
