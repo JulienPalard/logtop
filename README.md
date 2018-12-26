@@ -16,12 +16,12 @@ xbps-install -S logtop
 
 ## From sources
 
-Compile dependencies: `libncurses5-dev`, `uthash-dev`.
+Compile dependencies: `libncursesw5-dev`, `uthash-dev`.
 
 So on a Debian:
 
 ```bash session
-$ sudo apt install libncurses5-dev uthash-dev
+$ sudo apt install libncursesw5-dev uthash-dev
 Reading package lists... Done
 [...skipped for readability...]
 Processing triggers for man-db (2.8.2-1) ...
