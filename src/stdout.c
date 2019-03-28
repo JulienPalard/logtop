@@ -67,10 +67,6 @@ static void display_header(struct display_data *display_data)
     printf("%s\n", "RANK    CNT   LINE/S LINE");
 }
 
-static const result_printer printers[2] = {display_line,
-                                           display_result};
-
-
 void stdout_update(int nb_results, int line_by_line)
 {
     struct display_data display_data;

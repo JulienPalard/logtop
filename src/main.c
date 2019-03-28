@@ -162,8 +162,10 @@ static void parse_args(int ac, char **av)
                 break;
             case 'v':
                 version_and_exit();
+                break;
             case 'h':
                 usage_and_exit(EXIT_SUCCESS);
+                break;
             default:
                 usage_and_exit(EXIT_FAILURE);
         }
