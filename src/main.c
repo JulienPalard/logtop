@@ -94,14 +94,16 @@ static void usage_and_exit(int exit_code)
 {
     fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
             "Usage: tail -f something | logtop [OPTIONS]\n"
-            "    -s, --size=NUM         Number of log line to keep in memory\n"
-            "                           Defaults to : "
+            "    -n, --lines=NUM        Number of lines to print before exiting.\n"
+            "                           Defaults to: 10.\n"
+            "    -s, --size=NUM         Number of log line to keep in memory.\n"
+            "                           Defaults to: "
             STRINGIFY(DEFAULT_HISTORY_SIZE) "\n"
-            "    -q, --quiet            Quiet, only display a top 10 at exit.\n"
+            "    -q, --quiet            Quiet, only display top lines at exit\n"
+            "                           (see --keep to display more than 10).\n"
             "    -l, --line-by-line=NUM Print result line by line\n"
             "                           in a machine friendly format,\n"
-            "                           NUM: quantity of result by line.\n");
-    fprintf(exit_code == EXIT_SUCCESS ? stdout : stderr,
+            "                           NUM: quantity of result by line.\n"
             "    -i, --interval=NUM     Interval between graphical updates,\n"
             "                           in seconds. Defaults to 1.\n"
             "\n"
@@ -125,6 +127,7 @@ static void parse_args(int ac, char **av)
 {
     int c;
 
+    gl_env.print_at_exit = 10;
     gl_env.history_size = 0;
     gl_env.quiet = 0;
     gl_env.last_update_time = 0;
@@ -134,6 +137,7 @@ static void parse_args(int ac, char **av)
     {
         int option_index = 0;
         static struct option long_options[] = {
+            {"lines", 1, 0, 'n'},
             {"size", 1, 0, 's'},
             {"quiet", 0, 0, 'q'},
             {"help", 0, 0, 'h'},
@@ -142,7 +146,7 @@ static void parse_args(int ac, char **av)
             {"interval", 1, 0, 'i'},
             {0, 0, 0, 0}
         };
-        c = getopt_long(ac, av, "qhvl:s:i:",
+        c = getopt_long(ac, av, "qhvl:s:i:n:",
                         long_options, &option_index);
         if (c == -1)
             break;
@@ -153,6 +157,9 @@ static void parse_args(int ac, char **av)
                 break;
             case 'q':
                 gl_env.quiet = 1;
+                break;
+            case 'n':
+                gl_env.print_at_exit = atoi(optarg);
                 break;
             case 's':
                 gl_env.history_size = atoi(optarg);
@@ -183,7 +190,7 @@ static void at_exit(void)
     if (gl_env.line_by_line)
         stdout_update(gl_env.line_by_line, 1);
     else
-        stdout_update(10, 0);
+        stdout_update(gl_env.print_at_exit, 0);
     delete_logtop(gl_env.logtop);
     fflush(NULL);
 }

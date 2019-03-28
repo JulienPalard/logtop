@@ -42,6 +42,7 @@ typedef struct        s_env
     int               quiet;
     int               line_by_line;
     unsigned int      history_size;
+    unsigned int      print_at_exit;
     unsigned int      display_width;
     unsigned int      display_height;
     time_t            last_update_time;

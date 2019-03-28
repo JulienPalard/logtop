@@ -21,6 +21,9 @@ logtop \- Realtime log line rate analyser
 .PP
 .SH "OPTIONS"
 .TP
+.B \-n, \-\-lines=NUM
+Print NUM lines at exit, instead of 10, usefull in conjunction with \fB\-q\fR.
+.TP
 .B \-s, \-\-size=K
 Only keep K lines in memory, instead of 10000.
 .TP
@@ -63,9 +66,9 @@ starts with the client IP.
 .PP
 Realtime most requested web pages in a NCSA like log file.
 .PP
-\fBcat auth.log | grep \-v "CRON" | grep \-o ": .*" | logtop \-q \-s 100000\fR
+\fBcat auth.log | grep \-v "CRON" | grep \-o ": .*" | logtop \-q \-n 20 \-s 100000\fR
 .PP
-Display a one\-shot simple analyse of your auth.log.
+None interactively display top 20 non CRON lines from auth.log.
 .SH "SEE ALSO"
 .BR watch (1)
 .br
