@@ -1,0 +1,22 @@
+Source: logtop
+Section: admin
+Priority: optional
+Maintainer: Julien Palard <julien@palard.fr>
+Build-Depends: debhelper (>= 7.0.50~), dpkg-dev (>= 1.16.1~), libncurses5-dev, uthash-dev
+Standards-Version: 3.9.3
+Homepage: http://github.com/JulienPalard/logtop
+Vcs-Browser: https://github.com/JulienPalard/logtop
+Vcs-Git: git://github.com/JulienPalard/logtop.git
+
+Package: logtop
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: real time log line rate analyzer
+ logtop is a System Administrator tool to analyze line rate taking log
+ file as input. It reads on stdin and print a constantly updated result
+ using curses, displaying in columns:
+ Line number, count, frequency, and the actual line.
+ .
+  $ tail -f FILE | logtop
+ is the friendly version of:
+  $ watch 'tail FILE | sort | uniq -c | sort -gr'

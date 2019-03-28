@@ -1,0 +1,38 @@
+logtop (0.6-1) UNRELEASED; urgency=medium
+
+  * New -n/--lines parameter
+  * Switch to ncursesw
+
+ -- Julien Palard <julien@palard.fr>  Thu, 28 Mar 2019 22:58:10 +0100
+
+logtop (0.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Julien Palard <julien@palard.fr>  Sat, 17 Nov 2012 23:59:07 +0100
+
+logtop (0.4.3-1) unstable; urgency=low
+
+  * New Support LDFLAGS in Makefile
+  * Bump Standards-Version to 3.9.3
+  * Add Vcs-Browser and Vcs-Git fields
+  * Fix usless match patterns in debian/copyright
+  * Enable hardening build flags
+  * New line-by-line output without curses
+
+ -- Julien Palard <julien@palard.fr>  Sun, 20 May 2012 23:02:06 +0200
+
+logtop (0.3-1) unstable; urgency=low
+
+  * New upstream release
+  * Replacing the AVL tree used to store strings by an hashtable.
+  * Replacing the Wessel Dankers' libavl dependency with the statically compiled
+    Ben Pfaff's one (see README.Debian).
+
+ -- Julien Palard <julien@palard.fr>  Tue, 31 May 2011 18:45:09 +0200
+
+logtop (0.1-1) unstable; urgency=low
+
+  * Initial release. Closes: #605904
+
+ -- Julien Palard <julien@palard.fr>  Tue, 30 Nov 2010 23:00:08 +0100

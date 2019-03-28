@@ -1,0 +1,24 @@
+Choosing the avl implementation :
+
+In version 0.1, logtop was built against Wessel Dankers' libavl, the one
+packaged for Debian under the name `libavl`.
+On version 0.2, logtop is built against Ben Pfaff's one, which is statically
+linked, as Ben Pfaff whiches. You can read about it here :
+ * http://lists.debian.org/debian-devel/2001/07/msg01303.html
+and in its INSTALL file that I quote for you here :
+
+8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8< 8<
+  Installing
+  ----------
+
+  libavl is not intended to be installed as a shared library.  Instead,
+  its source files are meant to be included in programs directly.  A
+  given program normally uses only one or two of libavl's tree
+  structures.  Only the C source and header files for those structures
+  need to be included.  Refer to the libavl manual for more information.
+
+  As a result, there is no real "installation procedure" for libavl.  If
+  you like, you can install the test and demo programs in a convenient
+  location, but it hard to imagine a practical use for them other than
+  as tests and demonstrations.
+>8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8 >8
