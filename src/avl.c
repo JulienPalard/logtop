@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Julien Palard.  All rights reserved.
+ * Copyright (c) 2019 Julien Palard.  All rights reserved.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
